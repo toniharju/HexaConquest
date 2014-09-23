@@ -1,1 +1,8 @@
 Library/
+Temp/
+Assembly-CSharp-Editor-vs.csproj
+Assembly-CSharp-Editor.csproj
+Assembly-CSharp-vs.csproj
+Assembly-CSharp.csproj
+HexaConquest.sln
+HexaConquest.userprefs
