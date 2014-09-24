@@ -37,13 +37,13 @@ public class CameraController : MonoBehaviour {
 			
 		}
 
-		if( scroll > 0 && transform.position.y > YClamp.x ) {
+		if( scroll > 0 && transform.position.y > ZoomClamp.x ) {
 
 			transform.Translate ( 0, 0, scroll * Time.deltaTime * ZoomVelocity );
 
 		}
 
-		if( scroll < 0 && transform.position.y < YClamp.y ) {
+		if( scroll < 0 && transform.position.y < ZoomClamp.y ) {
 			
 			transform.Translate ( 0, 0, scroll * Time.deltaTime * ZoomVelocity );
 			
