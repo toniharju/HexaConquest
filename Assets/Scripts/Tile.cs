@@ -3,15 +3,14 @@ using System.Collections;
 
 public enum TileType {
 
-	Grass
+	Grass,
+	Snow
 
 }
 
 [ExecuteInEditMode]
 [RequireComponent( typeof( MeshFilter ), typeof( MeshRenderer ), typeof( MeshCollider ) )]
 public class Tile : MonoBehaviour {
-
-	private bool selected = false;
 
 	private MeshFilter meshFilter;
 	private MeshRenderer meshRenderer;
@@ -29,24 +28,35 @@ public class Tile : MonoBehaviour {
 
 		meshFilter = GetComponent< MeshFilter >();
 		meshRenderer = GetComponent< MeshRenderer >();
-		meshCollider = GetComponent< MeshCollider > ();
+		meshCollider = GetComponent< MeshCollider >();
 	
+		Mesh sharedMesh;
+		Material[] sharedMaterials = new Material[2];
+
 		switch( Model ) {
 
+			default:
 			case TileType.Grass:
 
-				Mesh sharedMesh = Resources.Load< Mesh >( "Models/HexagonGrass" );
-				Material[] sharedMaterials = new Material[2];
+				sharedMesh = Resources.Load< Mesh >( "Models/HexagonGrass" );
 				sharedMaterials[0] = Resources.Load< Material >( "Materials/HexagonGrass-SidesMaterial" );
 				sharedMaterials[1] = Resources.Load< Material >( "Materials/HexagonGrass-TopMaterial" );
 
-				meshFilter.mesh = sharedMesh;
-				meshRenderer.materials = sharedMaterials;
-				meshCollider.sharedMesh = sharedMesh;
+				break;
+
+			case TileType.Snow:
+
+				sharedMesh = Resources.Load< Mesh >( "Models/HexagonSnow" );
+				sharedMaterials[0] = Resources.Load< Material >( "Materials/HexagonSnow-SidesMaterial" );
+				sharedMaterials[1] = Resources.Load< Material >( "Materials/HexagonSnow-TopMaterial" );
 
 				break;
 
 		}
+
+		meshFilter.mesh = sharedMesh;
+		meshRenderer.materials = sharedMaterials;
+		meshCollider.sharedMesh = sharedMesh;
 
 		if( Position.x % 2 == 1 ) 
 			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y - 1 - Position.y );
