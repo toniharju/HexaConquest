@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour {
 	public float Velocity = 10;
 	public float ZoomVelocity = 100;
 
-	public Vector2 YClamp = new Vector2( 1.0f, 5.0f );
+	public Vector2 ZoomClamp = new Vector2( 1.0f, 5.0f );
 
 	private Vector3 clickMousePosition;
 
