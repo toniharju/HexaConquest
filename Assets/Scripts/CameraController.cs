@@ -6,6 +6,8 @@ public class CameraController : MonoBehaviour {
 	public float Velocity = 10;
 	public float ZoomVelocity = 100;
 
+	public Vector2 YClamp = new Vector2( 1.0f, 5.0f );
+
 	private Vector3 clickMousePosition;
 
 	// Use this for initialization
@@ -35,10 +37,16 @@ public class CameraController : MonoBehaviour {
 			
 		}
 
-		if( scroll != 0 ) {
+		if( scroll > 0 && transform.position.y > YClamp.x ) {
 
 			transform.Translate ( 0, 0, scroll * Time.deltaTime * ZoomVelocity );
 
+		}
+
+		if( scroll < 0 && transform.position.y < YClamp.y ) {
+			
+			transform.Translate ( 0, 0, scroll * Time.deltaTime * ZoomVelocity );
+			
 		}
 
 	}
