@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Camera : MonoBehaviour {
+public class CameraController : MonoBehaviour {
 
 	public float Velocity = 10;
 	public float ZoomVelocity = 100;
+
+	private Vector3 clickMousePosition;
 
 	// Use this for initialization
 	void Start () {

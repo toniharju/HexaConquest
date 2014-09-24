@@ -7,10 +7,15 @@ public enum TileType {
 
 }
 
+[ExecuteInEditMode]
+[RequireComponent( typeof( MeshFilter ), typeof( MeshRenderer ), typeof( MeshCollider ) )]
 public class Tile : MonoBehaviour {
+
+	private bool selected = false;
 
 	private MeshFilter meshFilter;
 	private MeshRenderer meshRenderer;
+	private MeshCollider meshCollider;
 
 	public TileType Model;
 
@@ -22,11 +27,9 @@ public class Tile : MonoBehaviour {
 		transform.rotation = Quaternion.Euler ( 270, 180, 0 );
 		transform.localScale = new Vector3( 100, 100, 100 );
 
-		gameObject.AddComponent< MeshFilter >();
-		gameObject.AddComponent< MeshRenderer >();
-
 		meshFilter = GetComponent< MeshFilter >();
 		meshRenderer = GetComponent< MeshRenderer >();
+		meshCollider = GetComponent< MeshCollider > ();
 	
 		switch( Model ) {
 
@@ -39,6 +42,7 @@ public class Tile : MonoBehaviour {
 
 				meshFilter.mesh = sharedMesh;
 				meshRenderer.materials = sharedMaterials;
+				meshCollider.sharedMesh = sharedMesh;
 
 				break;
 
@@ -54,6 +58,8 @@ public class Tile : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+
+
 	}
 
 }
