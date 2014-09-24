@@ -1,0 +1,43 @@
+UI:
+
+
+Tile UI:
+
+Nothing selected:
+----------------
+
+Kingdom status bar:
+---------------------------------------------------------
+| Current Gold ( +Gold Income / turn ) Turn number 	|
+--------------------------------------------------------|
+							|
+							|
+							|
+							|
+							|
+							|
+							|
+							|
+							|
+							|
+							|
+							|
+---------------------------------------------------------
+
+Tile UI:
+
+Tile selected:
+-------------
+
+Display a small box display tile information including:
+gold income from that tile, troops in that tile, troop status ( moved / not moved that turn )
+!!! If capturing or losing, display control value ( x / 100 ) !!!
+
+
+Castle tile selected:
+--------------------
+
+Display garrisoned units like units in other tiles.
+Display unit recruiting window with unit prices and unit queue 
+( 1 unit only, selecting another unit replaces the queued unit ).
+
