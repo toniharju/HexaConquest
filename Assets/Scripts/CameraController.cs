@@ -5,6 +5,7 @@ public class CameraController : MonoBehaviour {
 
 	public float Velocity = 10;
 	public float ZoomVelocity = 100;
+	public float PanVelocity = 100;
 
 	public Vector2 ZoomClamp = new Vector2( 1.0f, 5.0f );
 
@@ -47,6 +48,15 @@ public class CameraController : MonoBehaviour {
 			
 			transform.Translate ( 0, 0, scroll * Time.deltaTime * ZoomVelocity );
 			
+		}
+
+		if( Input.GetMouseButton ( 1 ) ) {
+
+			float mouseX = Input.GetAxis ( "Mouse X" );
+			float mouseY = Input.GetAxis ( "Mouse Y" );
+
+			transform.localPosition = transform.localPosition + ( Quaternion.Euler( 0, -45, 0 ) * new Vector3( mouseX * Time.deltaTime * PanVelocity, 0, mouseY * Time.deltaTime * PanVelocity ) );
+
 		}
 
 	}
