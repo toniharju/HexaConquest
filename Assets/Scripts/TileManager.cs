@@ -41,8 +41,8 @@ public class TileManager : MonoBehaviour {
 				originalColor[0] = current.renderer.materials[0].color;
 				originalColor[1] = current.renderer.materials[1].color;
 
-				current.renderer.materials[0].color = new Color( 0.0f, 1.0f, 0.0f );
-				current.renderer.materials[1].color = new Color( 0.0f, 1.0f, 0.0f );
+				current.renderer.materials[0].color = new Color( 0.0f, 0.74f, 0.95f );
+				current.renderer.materials[1].color = new Color( 0.0f, 0.74f, 0.95f );
 				
 			} else {
 
