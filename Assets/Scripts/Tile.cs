@@ -15,10 +15,14 @@ public class Tile : MonoBehaviour {
 	private MeshFilter meshFilter;
 	private MeshRenderer meshRenderer;
 	private MeshCollider meshCollider;
+	
+	private int owner = 0;
+	private int captureProgress = 0;
 
 	public TileType Model;
-
 	public Vector2 Position;
+	public int GoldValue = 1;
+	public int CaptureValue = 200;
 
 	// Use this for initialization
 	void Start () {
@@ -60,7 +64,7 @@ public class Tile : MonoBehaviour {
 		meshRenderer.materials = sharedMaterials;
 		meshCollider.sharedMesh = sharedMesh;
 
-		if( Position.x % 2 == 1 ) 
+		if( Position.x % 2 == 1 )
 			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y - 1 - Position.y );
 		else
 			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y * 2 );
@@ -72,7 +76,33 @@ public class Tile : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+		if (captureProgress <= -CaptureValue) {
 
+			captureProgress = -CaptureValue;
+			SetOwner (1);
+			renderer.materials[0].color = new Color( 0.0f, 1.0f, 0.0f );
+			renderer.materials[1].color = new Color( 0.0f, 1.0f, 0.0f );
+
+		} else if (captureProgress >= CaptureValue) {
+
+			captureProgress = CaptureValue;
+			SetOwner (2);
+			renderer.materials[0].color = new Color( 1.0f, 0.0f, 0.0f );
+			renderer.materials[1].color = new Color( 1.0f, 0.0f, 0.0f );
+
+		}
+
+	}
+
+	public void SetOwner( int value ) {
+
+		owner = value;
+
+	}
+
+	public int GetOwner() {
+
+		return owner;
 
 	}
 

@@ -4,7 +4,7 @@ using System.Collections;
 public class TileManager : MonoBehaviour {
 
 	private GameObject current;
-	private Color[] originalColor;
+	private Color originalColor;
 
 	public static Vector2 MapSize = new Vector2( 10, 10 );
 	private static GameObject[,] mapData;
@@ -12,7 +12,7 @@ public class TileManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		originalColor = new Color[2];
+
 
 	}
 	
@@ -21,8 +21,7 @@ public class TileManager : MonoBehaviour {
 	
 		if ( current != null && Input.GetKeyDown ( KeyCode.Escape ) ) {
 
-			current.renderer.materials[0].color = originalColor[0];
-			current.renderer.materials[1].color = originalColor[1];
+			current.renderer.material.color = originalColor;
 
 			current = null;
 
@@ -35,25 +34,21 @@ public class TileManager : MonoBehaviour {
 			if ( Physics.Raycast ( Camera.main.ScreenPointToRay ( Input.mousePosition ), out hit ) ) {
 
 				if( current != null ) {
-					current.renderer.materials[0].color = originalColor[0];
-					current.renderer.materials[1].color = originalColor[1];
+					current.renderer.material.color = originalColor;
 				}
 
 				current = hit.transform.gameObject;
 
-				originalColor[0] = current.renderer.materials[0].color;
-				originalColor[1] = current.renderer.materials[1].color;
+				originalColor = current.renderer.material.color;
 
-				current.renderer.materials[0].color = new Color( 0.0f, 0.74f, 0.95f );
-				current.renderer.materials[1].color = new Color( 0.0f, 0.74f, 0.95f );
+				current.renderer.material.color = new Color( 0.0f, 0.74f, 0.95f );
 				
 			} else {
 
 				if ( current != null ) {
 					
-					current.renderer.materials[0].color = originalColor[0];
-					current.renderer.materials[1].color = originalColor[1];
-					
+					current.renderer.material.color = originalColor;
+
 					current = null;
 					
 				}
