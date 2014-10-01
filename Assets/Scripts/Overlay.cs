@@ -3,6 +3,7 @@ using System.Collections;
 
 public enum OverlayType {
 
+	Tree,
 	Town
 
 }
@@ -21,35 +22,47 @@ public class Overlay : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		overlayObject = new GameObject( "Overlay" );
+		if( transform.childCount != 0 ) return;
 
-		overlayObject.transform.position = GetComponent< Tile >().Position;;
+		overlayObject = new GameObject( "Overlay" );
+		overlayObject.transform.parent = gameObject.transform;
+
+		overlayObject.transform.position = transform.position;
 		overlayObject.transform.rotation = Quaternion.Euler ( 270, 180, 0 );
-		overlayObject.transform.localScale = new Vector3( 100, 100, 100 );
+		overlayObject.transform.localScale = new Vector3( 1, 1, 1 );
+
+		overlayObject.AddComponent< MeshFilter >();
+		overlayObject.AddComponent< MeshRenderer >();
 
 		meshFilter = overlayObject.GetComponent< MeshFilter >();
 		meshRenderer = overlayObject.GetComponent< MeshRenderer >();
-		meshCollider = overlayObject.GetComponent< MeshCollider >();
 		
 		Mesh sharedMesh = new Mesh();
 		Material[] sharedMaterials = new Material[2];
 		
 		switch( Model ) {
 			
-		default:
-		case OverlayType.Town:
+			default:
+			case OverlayType.Town:
 			
-			//sharedMesh = Resources.Load< Mesh >( "Models/Town" );
-			//sharedMaterials[0] = Resources.Load< Material >( "Materials/HexagonGrass-SidesMaterial" );
-			//sharedMaterials[1] = Resources.Load< Material >( "Materials/HexagonGrass-TopMaterial" );
+				//sharedMesh = Resources.Load< Mesh >( "Models/Town" );
+				//sharedMaterials[0] = Resources.Load< Material >( "Materials/HexagonGrass-SidesMaterial" );
+				//sharedMaterials[1] = Resources.Load< Material >( "Materials/HexagonGrass-TopMaterial" );
 			
-			break;
+				break;
+
+			case OverlayType.Tree:
+
+				sharedMesh = Resources.Load< Mesh >( "Models/Tree" );
+				sharedMaterials[0] = Resources.Load< Material >( "Materials/Tree-Bark" );
+				sharedMaterials[1] = Resources.Load< Material >( "Materials/Tree-Leaves" );
+
+				break;
 			
 		}
 		
 		meshFilter.mesh = sharedMesh;
 		meshRenderer.materials = sharedMaterials;
-		meshCollider.sharedMesh = sharedMesh;
 
 	}
 	
