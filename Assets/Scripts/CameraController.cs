@@ -55,7 +55,7 @@ public class CameraController : MonoBehaviour {
 			float mouseX = Input.GetAxis ( "Mouse X" );
 			float mouseY = Input.GetAxis ( "Mouse Y" );
 
-			transform.localPosition = transform.localPosition + ( Quaternion.Euler( 0, -45, 0 ) * new Vector3( mouseX * Time.deltaTime * PanVelocity, 0, mouseY * Time.deltaTime * PanVelocity ) );
+			transform.localPosition = transform.localPosition + ( Quaternion.Euler( 0, -45, 0 ) * new Vector3( -mouseX * Time.deltaTime * PanVelocity, 0, -mouseY * Time.deltaTime * PanVelocity ) );
 
 		}
 
