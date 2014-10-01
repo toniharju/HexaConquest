@@ -6,6 +6,8 @@ public class TileManager : MonoBehaviour {
 	private GameObject current;
 	private Color[] originalColor;
 
+	public static Vector2 MapSize = new Vector2( 10, 10 );
+
 	// Use this for initialization
 	void Start () {
 	

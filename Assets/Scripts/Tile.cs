@@ -20,9 +20,14 @@ public class Tile : MonoBehaviour {
 
 	public Vector2 Position;
 
+	private static GameObject[,] mapData;
+
 	// Use this for initialization
 	void Start () {
 	
+		if( mapData == null )
+			mapData = new GameObject[ (int)TileManager.MapSize.x, (int)TileManager.MapSize.y ];
+
 		transform.rotation = Quaternion.Euler ( 270, 180, 0 );
 		transform.localScale = new Vector3( 100, 100, 100 );
 
@@ -63,12 +68,20 @@ public class Tile : MonoBehaviour {
 		else
 			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y * 2 );
 
+		mapData [ (int)Position.x, (int)Position.y ] = this.gameObject;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 
+
+	}
+
+	public static GameObject[,] GetMapData() {
+
+		return mapData;
 
 	}
 
