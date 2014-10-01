@@ -1,4 +1,19 @@
+TILES:
+
+- Grass
+- Snow
+- Mountain 
+- Snow-covered mountain
+- Snow-covered forest
+- Forest
+- Sand
+
+
 UI:
+
+
+GUI:
+
 
 
 Tile UI:
@@ -40,4 +55,17 @@ Castle tile selected:
 Display garrisoned units like units in other tiles.
 Display unit recruiting window with unit prices and unit queue 
 ( 1 unit only, selecting another unit replaces the queued unit ).
+
+
+
+
+
+UNITS:
+-------
+
+- Calculate overall power, health and capture in a tile, use the slowest unit as the army's speed in a tile.
+- 
+
+
+
 

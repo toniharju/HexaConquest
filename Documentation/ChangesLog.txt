@@ -1,0 +1,8 @@
+1.10.2014:
+
+- Changed the way tile selection shows in game mode.
+- Tweaked unit values.
+- Completed the first base level.
+- Tweaked tile settings, added GoldValue setting for tile gold income.
+- Started working on the damage calculations for combat situations.
+- Tweaked the camera speed values and camera zoom value.
