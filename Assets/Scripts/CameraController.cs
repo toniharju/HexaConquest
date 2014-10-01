@@ -22,8 +22,8 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () {
 	
-		float horizontal = Input.GetAxis ( "Horizontal" );
-		float vertical = Input.GetAxis ( "Vertical" );
+		float horizontal = Input.GetAxisRaw ( "Horizontal" );
+		float vertical = Input.GetAxisRaw ( "Vertical" );
 		float scroll = Input.GetAxis ( "Mouse ScrollWheel" );
 
 		if( vertical != 0 ) {
