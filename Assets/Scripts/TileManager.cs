@@ -7,6 +7,7 @@ public class TileManager : MonoBehaviour {
 	private Color[] originalColor;
 
 	public static Vector2 MapSize = new Vector2( 10, 10 );
+	private static GameObject[,] mapData;
 
 	// Use this for initialization
 	void Start () {
@@ -67,6 +68,19 @@ public class TileManager : MonoBehaviour {
 
 		return current;
 
+	}
+
+	public static void InitializeMap() {
+
+		if( mapData == null )
+			mapData = new GameObject[ (int)MapSize.x, (int)MapSize.y ];
+
+	}
+
+	public static GameObject[,] GetMapData() {
+		
+		return mapData;
+		
 	}
 
 }
