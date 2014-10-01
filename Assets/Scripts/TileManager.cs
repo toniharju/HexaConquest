@@ -61,4 +61,10 @@ public class TileManager : MonoBehaviour {
 
 	}
 
+	public GameObject GetCurrent() {
+
+		return current;
+
+	}
+
 }
