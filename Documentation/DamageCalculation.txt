@@ -1,0 +1,56 @@
+3 archer
+10 footman
+2 horseman
+
+archerHP = 5*3 = 15
+meleeHP = 10*10 = 100
+horseHP = 15*2 = 30
+
+hp = 145
+
+75% to hit
+
+
+
+--------------------------------------
+Total hp = 15 + 100 + 30 = 145
+
+33% footman
+33% horseman
+33% archer
+
+Only Footman = 100%
+
+Only Archers = 100%
+
+Only Horsemen = 100%
+
+1 Footman + 1 Horseman = 50/50 each
+
+1 Footman + 1 Archer = 66% / 33%
+
+1 Horseman + 1 Archer = 66% / 33%
+
+1 Footman + 1 Horseman + 1 Archer = 33% / 33% / 33%
+
+
+1: Hae yksikkötyypit armeijassa
+2: Väsää kaava, jolla jakaa vahingot
+3: ???
+4: Profit!
+
+1 - 3 looppia
+
+Archerien looppi:                || Summaa archerien damage, jaa kohteen total HP:llä, poista kohteesta kokonaisyksiköitä
+1: archerTotalPower / targetTotalHealth -- Miinusta targetin totalUnitStrenghtistä kunnes valmis tai 0;
+
+
+Footmanien looppi:
+
+
+Horsepowerlooppi:
+
+
+
+
+
