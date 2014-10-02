@@ -22,7 +22,7 @@ public class Overlay : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		if( transform.childCount != 0 ) return;
+		if( transform.childCount > 0 ) DestroyImmediate ( transform.FindChild ( "Overlay" ).gameObject );
 
 		overlayObject = new GameObject( "Overlay" );
 		overlayObject.transform.parent = gameObject.transform;
@@ -38,20 +38,25 @@ public class Overlay : MonoBehaviour {
 		meshRenderer = overlayObject.GetComponent< MeshRenderer >();
 		
 		Mesh sharedMesh = new Mesh();
-		Material[] sharedMaterials = new Material[2];
+		Material[] sharedMaterials;
 		
 		switch( Model ) {
 			
 			default:
 			case OverlayType.Town:
+
+				sharedMaterials = new Material[3];
 			
-				//sharedMesh = Resources.Load< Mesh >( "Models/Town" );
-				//sharedMaterials[0] = Resources.Load< Material >( "Materials/HexagonGrass-SidesMaterial" );
-				//sharedMaterials[1] = Resources.Load< Material >( "Materials/HexagonGrass-TopMaterial" );
+				sharedMesh = Resources.Load< Mesh >( "Models/Town" );
+				sharedMaterials[0] = Resources.Load< Material >( "Materials/Town-House" );
+				sharedMaterials[1] = Resources.Load< Material >( "Materials/Town-Castle" );
+				sharedMaterials[2] = Resources.Load< Material >( "Materials/Town-CastleDoors" );
 			
 				break;
 
 			case OverlayType.Tree:
+
+				sharedMaterials = new Material[2];
 
 				sharedMesh = Resources.Load< Mesh >( "Models/Tree" );
 				sharedMaterials[0] = Resources.Load< Material >( "Materials/Tree-Bark" );
