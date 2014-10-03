@@ -39,6 +39,12 @@ public class TileManager : MonoBehaviour {
 
 				current = hit.transform.gameObject;
 
+				if( current.GetComponent< Overlay >() != null ) {
+
+					if( current.GetComponent< Overlay >().Model == OverlayType.Tree ) return;
+
+				}
+
 				originalColor = current.renderer.material.color;
 
 				current.renderer.material.color = new Color( 0.0f, 0.74f, 0.95f );
