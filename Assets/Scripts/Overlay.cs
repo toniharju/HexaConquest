@@ -22,7 +22,7 @@ public class Overlay : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		if( transform.childCount > 0 ) DestroyImmediate ( transform.FindChild ( "Overlay" ).gameObject );
+		if( transform.FindChild ( "Overlay" ) != null ) DestroyImmediate ( transform.FindChild ( "Overlay" ).gameObject );
 
 		overlayObject = new GameObject( "Overlay" );
 		overlayObject.transform.parent = gameObject.transform;
