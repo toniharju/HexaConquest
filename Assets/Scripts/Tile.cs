@@ -34,6 +34,9 @@ public class Tile : MonoBehaviour {
 		transform.rotation = Quaternion.Euler ( 270, 180, 0 );
 		transform.localScale = new Vector3( 100, 100, 100 );
 
+		gameObject.isStatic = true;
+		renderer.castShadows = false;
+
 		meshFilter = GetComponent< MeshFilter >();
 		meshRenderer = GetComponent< MeshRenderer >();
 		meshCollider = GetComponent< MeshCollider >();
