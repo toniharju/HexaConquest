@@ -6,3 +6,5 @@
 - Tweaked tile settings, added GoldValue setting for tile gold income.
 - Started working on the damage calculations for combat situations.
 - Tweaked the camera speed values and camera zoom value.
+
+
