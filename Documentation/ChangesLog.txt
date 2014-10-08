@@ -7,4 +7,11 @@
 - Started working on the damage calculations for combat situations.
 - Tweaked the camera speed values and camera zoom value.
 
+8.10.2014:
+
+- Worked on the GUI 
+- Tweaked the models
+- Worked on the damage calculations
+- Worked on the icons
+
 
