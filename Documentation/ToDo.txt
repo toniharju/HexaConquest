@@ -67,5 +67,6 @@ UNITS:
 - 
 
 
-
+SHIELD EMBLEM FONT = Blackadder ITC
+SIZE = 183
 

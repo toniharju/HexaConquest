@@ -30,7 +30,7 @@ public class Mechanics : MonoBehaviour {
 	public int meleeCount = 0;
 	public int rangedCount = 0;
 	public int horseCount = 0;
-	public int totalCount = meleeCount + rangedCount + horseCount;
+	public int totalCount = 0;
 	public int maxCount = 16;
 
 	void Start () {
@@ -38,7 +38,7 @@ public class Mechanics : MonoBehaviour {
 		activeTurn = true;
 		hitDice = Random.Range (1, totalCount);
 
-
+		totalCount = meleeCount + rangedCount + horseCount;
 
 
 		//Check that the tile's unit count isn't greater than the max unit count
