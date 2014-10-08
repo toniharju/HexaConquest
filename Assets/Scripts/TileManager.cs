@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class TileManager : MonoBehaviour {
@@ -28,7 +29,7 @@ public class TileManager : MonoBehaviour {
 
 		}
 
-		if ( Input.GetMouseButtonUp ( 0 ) ) {
+		if ( Input.GetMouseButtonUp ( 0 ) && !EventSystem.current.IsPointerOverGameObject () ) {
 			
 			RaycastHit hit;
 			
