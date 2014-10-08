@@ -8,6 +8,7 @@ public class TileManager : MonoBehaviour {
 
 	public static Vector2 MapSize = new Vector2( 10, 10 );
 	private static GameObject[,] mapData;
+	private static int[,] ownerData;
 
 	// Use this for initialization
 	void Start () {
@@ -38,6 +39,12 @@ public class TileManager : MonoBehaviour {
 				}
 
 				current = hit.transform.gameObject;
+
+				if( current.GetComponent< Overlay >() != null ) {
+
+					if( current.GetComponent< Overlay >().Model == OverlayType.Tree ) return;
+
+				}
 
 				originalColor = current.renderer.material.color;
 
@@ -70,12 +77,21 @@ public class TileManager : MonoBehaviour {
 		if( mapData == null )
 			mapData = new GameObject[ (int)MapSize.x, (int)MapSize.y ];
 
+		if( ownerData == null )
+			ownerData = new int[ (int)MapSize.x, (int)MapSize.y ];
+
 	}
 
 	public static GameObject[,] GetMapData() {
 		
 		return mapData;
 		
+	}
+
+	public static int[,] GetOwnerData() {
+
+		return ownerData;
+
 	}
 
 }

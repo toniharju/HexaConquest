@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum TileType {
 
@@ -15,9 +16,10 @@ public class Tile : MonoBehaviour {
 	private MeshFilter meshFilter;
 	private MeshRenderer meshRenderer;
 	private MeshCollider meshCollider;
-	
-	private int owner = 0;
+
 	private int captureProgress = 0;
+
+	private GameObject[] squads = new GameObject[ 3 ];
 
 	public TileType Model;
 	public Vector2 Position;
@@ -70,39 +72,58 @@ public class Tile : MonoBehaviour {
 			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y * 2 );
 
 		TileManager.GetMapData() [ (int)Position.x, (int)Position.y ] = this.gameObject;
+		TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 0;
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-		if (captureProgress <= -CaptureValue) {
 
+	public void OnTurnUpdate() {
+
+		if (captureProgress <= -CaptureValue) {
+			
 			captureProgress = -CaptureValue;
-			SetOwner (1);
+			TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 1;
 			renderer.materials[0].color = new Color( 0.0f, 1.0f, 0.0f );
 			renderer.materials[1].color = new Color( 0.0f, 1.0f, 0.0f );
-
+			
 		} else if (captureProgress >= CaptureValue) {
-
+			
 			captureProgress = CaptureValue;
-			SetOwner (2);
+			TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 2;
 			renderer.materials[0].color = new Color( 1.0f, 0.0f, 0.0f );
 			renderer.materials[1].color = new Color( 1.0f, 0.0f, 0.0f );
+			
+		}
+
+		if( TileManager.GetOwnerData ()[ (int)Position.x, (int)Position.y ] == 1 ) {
+
+			
 
 		}
 
 	}
 
-	public void SetOwner( int value ) {
+	public void AddSquad( SquadType type, int size ) {
 
-		owner = value;
+		if( squads[ (int)type ] != null ) return;
+
+		GameObject temp = Instantiate ( Resources.Load ( "Prefabs/FootmanSquad" ) ) as GameObject;
+		Squad squad = temp.AddComponent< Squad >();
+
+		temp.transform.parent = gameObject.transform;
+
+		squads[ (int)type ] = temp;
 
 	}
 
-	public int GetOwner() {
+	public void MoveSquad( SquadType type, Vector2 to ) {
 
-		return owner;
+
+
+	}
+
+	public void SetSquadSize( SquadType type, int size ) {
+
+		//squad[ type ] = size;
 
 	}
 
