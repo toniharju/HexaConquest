@@ -27,6 +27,9 @@ public class Overlay : MonoBehaviour {
 		overlayObject = new GameObject( "Overlay" );
 		overlayObject.transform.parent = gameObject.transform;
 
+		if (gameObject.layer == 8) overlayObject.layer = 8;
+		if (gameObject.isStatic) overlayObject.isStatic = true;
+
 		overlayObject.transform.position = transform.position;
 		overlayObject.transform.rotation = Quaternion.Euler ( 270, 180, 0 );
 		overlayObject.transform.localScale = new Vector3( 1, 1, 1 );
