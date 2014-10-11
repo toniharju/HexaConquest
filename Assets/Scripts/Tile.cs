@@ -25,6 +25,7 @@ public class Tile : MonoBehaviour {
 	public Vector2 Position;
 	public int GoldValue = 1;
 	public int CaptureValue = 200;
+	public byte Owner = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -75,7 +76,44 @@ public class Tile : MonoBehaviour {
 			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y * 2 );
 
 		TileManager.GetMapData() [ (int)Position.x, (int)Position.y ] = this.gameObject;
-		TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 0;
+		TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = Owner;
+
+	}
+
+	private void UpdateFog() {
+
+		if( Owner == 1 ) {
+			
+			int x = (int)Position.x;
+			int y = (int)Position.y;
+			
+			for( int ox = -1; ox < 2; ox++ ) {
+				
+				for( int oy = -1; oy < 2; oy++ ) {
+
+					int dx = x + ox;
+					int dy = y + oy;
+
+					if( dx > -1 && dx < TileManager.MapSize.x &&
+					    dy > -1 && dy < TileManager.MapSize.y && TileManager.GetMapData()[ dx, dy ].layer != 8 ) {
+						
+						if( ox != 0 && oy == 1 ) continue;
+						
+						TileManager.GetMapData ()[ dx, dy ].layer = 8;
+						
+						if( TileManager.GetMapData ()[ dx, dy ].GetComponent< Overlay >() != null ) {
+							
+							TileManager.GetMapData ()[ dx, dy ].transform.FindChild ( "Overlay" ).gameObject.layer = 8;
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+		}
 
 	}
 
@@ -84,6 +122,7 @@ public class Tile : MonoBehaviour {
 		if (captureProgress <= -CaptureValue) {
 			
 			captureProgress = -CaptureValue;
+			Owner = 1;
 			TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 1;
 			renderer.materials[0].color = new Color( 0.0f, 1.0f, 0.0f );
 			renderer.materials[1].color = new Color( 0.0f, 1.0f, 0.0f );
@@ -91,17 +130,14 @@ public class Tile : MonoBehaviour {
 		} else if (captureProgress >= CaptureValue) {
 			
 			captureProgress = CaptureValue;
+			Owner = 2;
 			TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 2;
 			renderer.materials[0].color = new Color( 1.0f, 0.0f, 0.0f );
 			renderer.materials[1].color = new Color( 1.0f, 0.0f, 0.0f );
 			
 		}
 
-		if( TileManager.GetOwnerData ()[ (int)Position.x, (int)Position.y ] == 1 ) {
-
-			
-
-		}
+		UpdateFog ();
 
 	}
 

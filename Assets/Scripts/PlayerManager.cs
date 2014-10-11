@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 		if( Input.GetKeyDown ( KeyCode.Space ) && turn == 1 ) {
 
 			int mapW = (int)TileManager.MapSize.x;

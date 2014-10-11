@@ -9,7 +9,7 @@ public class TileManager : MonoBehaviour {
 
 	public static Vector2 MapSize = new Vector2( 10, 10 );
 	private static GameObject[,] mapData;
-	private static int[,] ownerData;
+	private static byte[,] ownerData;
 
 	// Use this for initialization
 	void Start () {
@@ -79,7 +79,7 @@ public class TileManager : MonoBehaviour {
 			mapData = new GameObject[ (int)MapSize.x, (int)MapSize.y ];
 
 		if( ownerData == null )
-			ownerData = new int[ (int)MapSize.x, (int)MapSize.y ];
+			ownerData = new byte[ (int)MapSize.x, (int)MapSize.y ];
 
 	}
 
@@ -89,7 +89,7 @@ public class TileManager : MonoBehaviour {
 		
 	}
 
-	public static int[,] GetOwnerData() {
+	public static byte[,] GetOwnerData() {
 
 		return ownerData;
 
