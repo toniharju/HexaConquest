@@ -82,11 +82,11 @@ public class Tile : MonoBehaviour {
 
 	private void UpdateFog() {
 
-		if( Owner == 1 ) {
+		if( GetComponent< Overlay >() != null && GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) {
 			
 			int x = (int)Position.x;
 			int y = (int)Position.y;
-			
+
 			for( int ox = -1; ox < 2; ox++ ) {
 				
 				for( int oy = -1; oy < 2; oy++ ) {
@@ -96,14 +96,18 @@ public class Tile : MonoBehaviour {
 
 					if( dx > -1 && dx < TileManager.MapSize.x &&
 					    dy > -1 && dy < TileManager.MapSize.y && TileManager.GetMapData()[ dx, dy ].layer != 8 ) {
-						
-						if( ox != 0 && oy == 1 ) continue;
-						
+
+						if( x % 2 == 1 ) {
+							if( ox != 0 && oy == -1 ) continue;
+						} else {
+							if( ox != 0 && oy == 1 ) continue;
+						}
+
 						TileManager.GetMapData ()[ dx, dy ].layer = 8;
 						
 						if( TileManager.GetMapData ()[ dx, dy ].GetComponent< Overlay >() != null ) {
 							
-							TileManager.GetMapData ()[ dx, dy ].transform.FindChild ( "Overlay" ).gameObject.layer = 8;
+							//TileManager.GetMapData ()[ dx, dy ].transform.FindChild ( "Overlay" ).gameObject.layer = 8;
 							
 						}
 						
@@ -113,6 +117,10 @@ public class Tile : MonoBehaviour {
 				
 			}
 			
+		} else {
+
+
+
 		}
 
 	}

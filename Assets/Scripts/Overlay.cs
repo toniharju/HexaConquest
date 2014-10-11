@@ -4,7 +4,8 @@ using System.Collections;
 public enum OverlayType {
 
 	Tree,
-	Town
+	FriendlyTown,
+	EnemyTown
 
 }
 
@@ -27,7 +28,7 @@ public class Overlay : MonoBehaviour {
 		overlayObject = new GameObject( "Overlay" );
 		overlayObject.transform.parent = gameObject.transform;
 
-		if (gameObject.layer == 8) overlayObject.layer = 8;
+		//if (gameObject.layer == 8) overlayObject.layer = 8;
 		if (gameObject.isStatic) overlayObject.isStatic = true;
 
 		overlayObject.transform.position = transform.position;
@@ -46,7 +47,8 @@ public class Overlay : MonoBehaviour {
 		switch( Model ) {
 			
 			default:
-			case OverlayType.Town:
+			case OverlayType.EnemyTown:
+			case OverlayType.FriendlyTown:
 
 				sharedMaterials = new Material[3];
 			
@@ -71,6 +73,12 @@ public class Overlay : MonoBehaviour {
 		
 		meshFilter.mesh = sharedMesh;
 		meshRenderer.materials = sharedMaterials;
+
+	}
+
+	void Update() {
+
+		overlayObject.layer = gameObject.layer;
 
 	}
 	
