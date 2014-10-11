@@ -28,7 +28,6 @@ public class Overlay : MonoBehaviour {
 		overlayObject = new GameObject( "Overlay" );
 		overlayObject.transform.parent = gameObject.transform;
 
-		//if (gameObject.layer == 8) overlayObject.layer = 8;
 		if (gameObject.isStatic) overlayObject.isStatic = true;
 
 		overlayObject.transform.position = transform.position;
@@ -41,7 +40,7 @@ public class Overlay : MonoBehaviour {
 		meshFilter = overlayObject.GetComponent< MeshFilter >();
 		meshRenderer = overlayObject.GetComponent< MeshRenderer >();
 		
-		Mesh sharedMesh = new Mesh();
+		Mesh sharedMesh;
 		Material[] sharedMaterials;
 		
 		switch( Model ) {
@@ -71,8 +70,8 @@ public class Overlay : MonoBehaviour {
 			
 		}
 		
-		meshFilter.mesh = sharedMesh;
-		meshRenderer.materials = sharedMaterials;
+		meshFilter.sharedMesh = sharedMesh;
+		meshRenderer.sharedMaterials = sharedMaterials;
 
 	}
 

@@ -66,8 +66,8 @@ public class Tile : MonoBehaviour {
 
 		}
 
-		meshFilter.mesh = sharedMesh;
-		meshRenderer.materials = sharedMaterials;
+		meshFilter.sharedMesh = sharedMesh;
+		meshRenderer.sharedMaterials = sharedMaterials;
 		meshCollider.sharedMesh = sharedMesh;
 
 		if( Position.x % 2 == 1 )
