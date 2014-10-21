@@ -5,7 +5,8 @@ public enum OverlayType {
 
 	Tree,
 	FriendlyTown,
-	EnemyTown
+	EnemyTown,
+	Mine
 
 }
 
@@ -65,6 +66,18 @@ public class Overlay : MonoBehaviour {
 				sharedMesh = Resources.Load< Mesh >( "Models/Tree" );
 				sharedMaterials[0] = Resources.Load< Material >( "Materials/Tree-Bark" );
 				sharedMaterials[1] = Resources.Load< Material >( "Materials/Tree-Leaves" );
+
+				break;
+
+			case OverlayType.Mine:
+
+				sharedMaterials = new Material[4];
+
+				sharedMesh = Resources.Load< Mesh >( "Models/Mine" );
+				sharedMaterials[0] = Resources.Load< Material >( "Materials/MineFrameEnd" );
+				sharedMaterials[1] = Resources.Load< Material >( "Materials/MineFrame" );
+				sharedMaterials[2] = Resources.Load< Material >( "Materials/MineDoor" );
+				sharedMaterials[3] = Resources.Load< Material >( "Materials/Mine" );
 
 				break;
 			

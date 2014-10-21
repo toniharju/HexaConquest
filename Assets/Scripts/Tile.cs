@@ -19,7 +19,7 @@ public class Tile : MonoBehaviour {
 
 	private int captureProgress = 0;
 
-	private GameObject[] squads = new GameObject[ 3 ];
+	public List< Unit > Units = new List< Unit >();
 
 	public TileType Model;
 	public Vector2 Position;
@@ -82,10 +82,10 @@ public class Tile : MonoBehaviour {
 
 	private void UpdateFog() {
 
+		int x = (int)Position.x;
+		int y = (int)Position.y;
+
 		if( GetComponent< Overlay >() != null && GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) {
-			
-			int x = (int)Position.x;
-			int y = (int)Position.y;
 
 			for( int ox = -1; ox < 2; ox++ ) {
 				
@@ -105,22 +105,12 @@ public class Tile : MonoBehaviour {
 
 						TileManager.GetMapData ()[ dx, dy ].layer = 8;
 						
-						if( TileManager.GetMapData ()[ dx, dy ].GetComponent< Overlay >() != null ) {
-							
-							//TileManager.GetMapData ()[ dx, dy ].transform.FindChild ( "Overlay" ).gameObject.layer = 8;
-							
-						}
-						
 					}
 					
 				}
 				
 			}
 			
-		} else {
-
-
-
 		}
 
 	}
@@ -149,28 +139,34 @@ public class Tile : MonoBehaviour {
 
 	}
 
-	public void AddSquad( SquadType type, int size ) {
+	public List< Unit > GetUnits() {
 
-		if( squads[ (int)type ] != null ) return;
-
-		GameObject temp = Instantiate ( Resources.Load ( "Prefabs/FootmanSquad" ) ) as GameObject;
-		Squad squad = temp.AddComponent< Squad >();
-
-		temp.transform.parent = gameObject.transform;
-
-		squads[ (int)type ] = temp;
+		return Units;
 
 	}
 
-	public void MoveSquad( SquadType type, Vector2 to ) {
+	public void MoveUnitFrom( UnitType type, Vector2 position ) {
+
+		int x = (int)position.x;
+		int y = (int)position.y;
+
+		Overlay overlay = TileManager.GetMapData ()[ x, y ].GetComponent< Overlay >();
+
+		if( overlay != null && overlay.Model == OverlayType.FriendlyTown ) {
 
 
 
-	}
+			Unit u = new Unit();
+			u.SetOwner ( GameObject.Find ( "Manager" ).GetComponent< PlayerManager >().GetTurn () );
+			u.SetUnitType( type );
 
-	public void SetSquadSize( SquadType type, int size ) {
+			Units.Add ( u );
 
-		//squad[ type ] = size;
+		} else {
+
+
+
+		}
 
 	}
 

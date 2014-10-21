@@ -4,6 +4,9 @@ using System.Collections;
 
 public class TileManager : MonoBehaviour {
 
+	private GameObject castleInfoPanel;
+	private GameObject tileInfoPanel;
+
 	private GameObject current;
 	private Color originalColor;
 
@@ -14,7 +17,11 @@ public class TileManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		castleInfoPanel = GameObject.Find ( "CastleInfoPanel" );
+		castleInfoPanel.SetActive ( false );
 
+		tileInfoPanel = GameObject.Find ( "TileInfoPanel" );
+		tileInfoPanel.SetActive ( false );
 
 	}
 	
@@ -24,7 +31,6 @@ public class TileManager : MonoBehaviour {
 		if ( current != null && Input.GetKeyDown ( KeyCode.Escape ) ) {
 
 			current.renderer.material.color = originalColor;
-
 			current = null;
 
 		}
@@ -45,6 +51,16 @@ public class TileManager : MonoBehaviour {
 
 					if( current.GetComponent< Overlay >().Model == OverlayType.Tree ) return;
 
+					if( current.GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) {
+
+						castleInfoPanel.SetActive ( true );
+
+					}
+
+				} else {
+					
+					castleInfoPanel.SetActive ( false );
+					
 				}
 
 				originalColor = current.renderer.material.color;

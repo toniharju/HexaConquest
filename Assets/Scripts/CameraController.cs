@@ -18,8 +18,7 @@ public class CameraController : MonoBehaviour {
 		transform.rotation = Quaternion.Euler ( 45, 315, 0 );
 
 	}
-	
-	// Update is called once per frame
+
 	void LateUpdate () {
 	
 		float horizontal = Input.GetAxisRaw ( "Horizontal" );
