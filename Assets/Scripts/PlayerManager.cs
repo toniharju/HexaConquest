@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
-	private byte turn = 1;
+	private static byte turn = 1;
 
 	private static int[] units = new int[3];
 
 	public Vector2 FriendlyTownLocation;
+
+	public int Gold = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -38,14 +40,6 @@ public class PlayerManager : MonoBehaviour {
 			for( int y = 0; y < mapH; y++ ) {
 
 				for( int x = 0; x < mapW; x++ ) {
-				
-					List< Unit > tile_units = TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().GetUnits();
-
-					if( tile_units.Count > 0 ) {
-
-
-
-					}
 
 					TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().OnTurnUpdate ();
 
@@ -67,6 +61,8 @@ public class PlayerManager : MonoBehaviour {
 
 		units[ (int)UnitType.Footman ]++;
 
+		TileManager.GetMapData()[ (int)FriendlyTownLocation.x, (int)FriendlyTownLocation.y + 1 ].GetComponent< Tile >().MoveUnitFrom ( UnitType.Footman, FriendlyTownLocation );
+
 	}
 
 	public static int GetAllUnits( UnitType type ) {
@@ -75,7 +71,7 @@ public class PlayerManager : MonoBehaviour {
 
 	}
 
-	public byte GetTurn() { return turn; }
+	public static byte GetTurn() { return turn; }
 
 	public bool IsPlayerTurn() { return turn == 1; }
 	public bool IsAITurn() { return turn == 2; }
