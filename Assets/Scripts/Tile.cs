@@ -2,27 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum TileType {
-
-	Grass,
-	Snow
-
-}
-
-[ExecuteInEditMode]
-[RequireComponent( typeof( MeshFilter ), typeof( MeshRenderer ), typeof( MeshCollider ) )]
 public class Tile : MonoBehaviour {
-
-	private MeshFilter meshFilter;
-	private MeshRenderer meshRenderer;
-	private MeshCollider meshCollider;
 
 	private int captureProgress = 0;
 
 	public List< Unit > Units = new List< Unit >();
 
-	public TileType Model;
-	public Vector2 Position;
 	public int GoldValue = 1;
 	public int CaptureValue = 200;
 	public byte Owner = 0;
@@ -32,51 +17,26 @@ public class Tile : MonoBehaviour {
 
 		TileManager.InitializeMap ();
 
-		transform.rotation = Quaternion.Euler ( 270, 180, 0 );
-		transform.localScale = new Vector3( 100, 100, 100 );
+		//TileManager.GetMapData() [ (int)Position.x, (int)Position.y ] = this.gameObject;
+		//TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = Owner;
 
-		gameObject.isStatic = true;
-		renderer.castShadows = false;
+	}
 
-		meshFilter = GetComponent< MeshFilter >();
-		meshRenderer = GetComponent< MeshRenderer >();
-		meshCollider = GetComponent< MeshCollider >();
-	
-		Mesh sharedMesh;
-		Material[] sharedMaterials = new Material[2];
+	void Update() {
 
-		switch( Model ) {
+		if ( !this.Equals ( TileManager.GetCurrent () ) ) return;
 
-			default:
-			case TileType.Grass:
+		Overlay overlay = GetComponent< Overlay > ();
 
-				sharedMesh = Resources.Load< Mesh >( "Models/HexagonGrass" );
-				sharedMaterials[0] = Resources.Load< Material >( "Materials/HexagonGrass-SidesMaterial" );
-				sharedMaterials[1] = Resources.Load< Material >( "Materials/HexagonGrass-TopMaterial" );
+		if ( overlay != null ) {
 
-				break;
+			if( overlay.Model == OverlayType.FriendlyTown ) {
 
-			case TileType.Snow:
 
-				sharedMesh = Resources.Load< Mesh >( "Models/HexagonSnow" );
-				sharedMaterials[0] = Resources.Load< Material >( "Materials/HexagonSnow-SidesMaterial" );
-				sharedMaterials[1] = Resources.Load< Material >( "Materials/HexagonSnow-TopMaterial" );
 
-				break;
+			}
 
 		}
-
-		meshFilter.sharedMesh = sharedMesh;
-		meshRenderer.sharedMaterials = sharedMaterials;
-		meshCollider.sharedMesh = sharedMesh;
-
-		if( Position.x % 2 == 1 )
-			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y - 1 - Position.y );
-		else
-			transform.position = new Vector3( Position.x * 1.5f, 0, -1 * Position.y * 2 );
-
-		TileManager.GetMapData() [ (int)Position.x, (int)Position.y ] = this.gameObject;
-		TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = Owner;
 
 	}
 
@@ -85,7 +45,9 @@ public class Tile : MonoBehaviour {
 		int x = (int)Position.x;
 		int y = (int)Position.y;
 
-		if( ( GetComponent< Overlay >() != null && GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) || Owner == 1 ) {
+		if( ( GetComponent< Overlay >() != null && GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) ||
+		    Owner == 1 ||
+		    Units.Count > 0 ) {
 
 			for( int ox = -1; ox < 2; ox++ ) {
 				
@@ -143,12 +105,73 @@ public class Tile : MonoBehaviour {
 
 		}
 
+		Transform unit = transform.FindChild ( "Unit" );
+		
+		if( Units.Count != 0 && unit == null ) {
+			
+			GameObject unit_object = new GameObject( "Unit" );
+			
+			unit_object.layer = 8;
+			
+			unit_object.AddComponent< MeshFilter >();
+			MeshRenderer mesh_renderer = unit_object.AddComponent< MeshRenderer >();
+			mesh_renderer.sharedMaterials = new Material[4];
+			
+			unit_object.transform.parent = transform;
+			
+			unit_object.transform.localPosition = Vector3.zero;
+			unit_object.transform.localRotation = Quaternion.Euler ( 0, 0, 0 );
+			unit_object.transform.localScale = new Vector3( 1, 1, 1 );
+			
+			unit = unit_object.transform;
+			
+		}
+		
+		if( Units.Count > 0 && Units.Count < 6 ) {
+			
+			Material[] material = new Material[4];
+			material[0] = Resources.Load< Material >( "Materials/ShieldSidesAndBack" );
+			material[1] = Resources.Load< Material >( "Materials/ShieldFront" );
+			material[2] = Resources.Load< Material >( "Materials/Stand" );
+			material[3] = Resources.Load< Material >( "Materials/Helmet" );
+			
+			unit.GetComponent< MeshFilter >().sharedMesh = Resources.Load< Mesh >( "Models/Unit3" );
+			unit.GetComponent< MeshRenderer >().sharedMaterials = material;
+			
+		} else if( Units.Count > 5 && Units.Count < 11 ) {
+			
+			Material[] material = new Material[4];
+			material[0] = Resources.Load< Material >( "Materials/ShieldSidesAndBack" );
+			material[1] = Resources.Load< Material >( "Materials/ShieldFront" );
+			material[2] = Resources.Load< Material >( "Materials/Stand" );
+			material[3] = Resources.Load< Material >( "Materials/Helmet" );
+			
+			unit.GetComponent< MeshFilter >().sharedMesh = Resources.Load< Mesh >( "Models/Unit6" );
+			unit.GetComponent< MeshRenderer >().sharedMaterials = material;
+			
+		} else if( Units.Count > 10 && Units.Count < 17 ) {
+			
+			Material[] material = new Material[4];
+			material[0] = Resources.Load< Material >( "Materials/ShieldSidesAndBack" );
+			material[1] = Resources.Load< Material >( "Materials/ShieldFront" );
+			material[2] = Resources.Load< Material >( "Materials/Stand" );
+			material[3] = Resources.Load< Material >( "Materials/Helmet" );
+			
+			unit.GetComponent< MeshFilter >().sharedMesh = Resources.Load< Mesh >( "Models/Unit9" );
+			unit.GetComponent< MeshRenderer >().sharedMaterials = material;
+			
+		} else {
+			
+			if( unit != null ) DestroyImmediate ( unit.gameObject );
+			
+		}
+
 		if( Owner == 0 ) {
-			renderer.materials[0].color = new Color( 0.8f, 0.8f, 0.8f );
+			renderer.material.color = new Color( 0.8f, 0.8f, 0.8f );
 		} else if( Owner == 1 ) {
-			renderer.materials[0].color = new Color( 0.0f, 1.0f, 0.0f );
+			renderer.material.color = new Color( 0.0f, 1.0f, 0.0f );
 		} else if( Owner == 2 ) {
-			renderer.materials[0].color = new Color( 1.0f, 0.0f, 0.0f );
+			renderer.material.color = new Color( 1.0f, 0.0f, 0.0f );
 		}
 
 		UpdateFog ();
@@ -165,10 +188,12 @@ public class Tile : MonoBehaviour {
 
 		int x = (int)position.x;
 		int y = (int)position.y;
+		Debug.Log (Mathf.Abs (transform.position.x - position.x));
+		if ( Mathf.Abs (transform.position.x - position.x ) > 1 || Mathf.Abs ( transform.position.y - position.y ) > 1 || Units.Count == 16 ) return;
 
 		Overlay overlay = TileManager.GetMapData ()[ x, y ].GetComponent< Overlay >();
 
-		if( overlay != null && overlay.Model == OverlayType.FriendlyTown && Units.Count < 16 ) {
+		if( overlay != null && overlay.Model == OverlayType.FriendlyTown ) {
 
 			Unit u = new Unit();
 			u.SetOwner ( PlayerManager.GetTurn () );
@@ -176,70 +201,30 @@ public class Tile : MonoBehaviour {
 
 			Units.Add ( u );
 
-			Transform unit = transform.FindChild ( "Unit" );
-			
-			if( Units.Count != 0 && unit == null ) {
-				
-				GameObject unit_object = new GameObject( "Unit" );
-
-				unit_object.layer = 8;
-
-				unit_object.AddComponent< MeshFilter >();
-				MeshRenderer mesh_renderer = unit_object.AddComponent< MeshRenderer >();
-				mesh_renderer.sharedMaterials = new Material[4];
-
-				unit_object.transform.parent = transform;
-
-				unit_object.transform.localPosition = Vector3.zero;
-				unit_object.transform.localRotation = Quaternion.Euler ( 0, 0, 0 );
-				unit_object.transform.localScale = new Vector3( 1, 1, 1 );
-
-				unit = unit_object.transform;
-				
-			}
-			
-			if( Units.Count > 0 && Units.Count < 6 ) {
-
-				Material[] material = new Material[4];
-				material[0] = Resources.Load< Material >( "Materials/ShieldSidesAndBack" );
-				material[1] = Resources.Load< Material >( "Materials/ShieldFront" );
-				material[2] = Resources.Load< Material >( "Materials/Stand" );
-				material[3] = Resources.Load< Material >( "Materials/Helmet" );
-
-				unit.GetComponent< MeshFilter >().sharedMesh = Resources.Load< Mesh >( "Models/Unit3" );
-				unit.GetComponent< MeshRenderer >().sharedMaterials = material;
-				
-			} else if( Units.Count > 5 && Units.Count < 11 ) {
-				
-				Material[] material = new Material[4];
-				material[0] = Resources.Load< Material >( "Materials/ShieldSidesAndBack" );
-				material[1] = Resources.Load< Material >( "Materials/ShieldFront" );
-				material[2] = Resources.Load< Material >( "Materials/Stand" );
-				material[3] = Resources.Load< Material >( "Materials/Helmet" );
-				
-				unit.GetComponent< MeshFilter >().sharedMesh = Resources.Load< Mesh >( "Models/Unit6" );
-				unit.GetComponent< MeshRenderer >().sharedMaterials = material;
-				
-			} else if( Units.Count > 10 && Units.Count < 17 ) {
-				
-				Material[] material = new Material[4];
-				material[0] = Resources.Load< Material >( "Materials/ShieldSidesAndBack" );
-				material[1] = Resources.Load< Material >( "Materials/ShieldFront" );
-				material[2] = Resources.Load< Material >( "Materials/Stand" );
-				material[3] = Resources.Load< Material >( "Materials/Helmet" );
-				
-				unit.GetComponent< MeshFilter >().sharedMesh = Resources.Load< Mesh >( "Models/Unit9" );
-				unit.GetComponent< MeshRenderer >().sharedMaterials = material;
-				
-			} else {
-				
-				if( unit != null ) DestroyImmediate ( unit.gameObject );
-				
-			}
-
 		} else {
 
+			if( Units.Count == 16 ) return;
+			
+			Unit u = new Unit();
+			u.SetOwner ( PlayerManager.GetTurn () );
+			u.SetUnitType( type );
+			
+			Units.Add ( u );
 
+			int i = 0;
+			foreach( Unit temp in TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().Units ) {
+
+				if( temp.GetUnitType () == type ) {
+
+					TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().Units.RemoveAt( i );
+
+					return;
+
+				}
+
+				i++;
+
+			}
 
 		}
 

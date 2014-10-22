@@ -2,20 +2,20 @@
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class TileManager : MonoBehaviour {
+public class TileManager {
 
-	private GameObject castleInfoPanel;
-	private GameObject tileInfoPanel;
+	private static GameObject castleInfoPanel;
+	private static GameObject tileInfoPanel;
 
-	private GameObject current;
-	private Color originalColor;
+	private static GameObject current;
+	private static Color originalColor;
 
 	public static Vector2 MapSize = new Vector2( 10, 10 );
 	private static GameObject[,] mapData;
 	private static byte[,] ownerData;
 
 	// Use this for initialization
-	void Start () {
+	public static void Initialize () {
 	
 		castleInfoPanel = GameObject.Find ( "CastleInfoPanel" );
 		castleInfoPanel.SetActive ( false );
@@ -26,9 +26,12 @@ public class TileManager : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public static void Update () {
 	
-		if ( current != null && Input.GetKeyDown ( KeyCode.Escape ) ) {
+		if ( current != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
+
+			tileInfoPanel.SetActive ( false );
+			castleInfoPanel.SetActive ( false );
 
 			current.renderer.material.color = originalColor;
 			current = null;
@@ -47,18 +50,19 @@ public class TileManager : MonoBehaviour {
 
 				current = hit.transform.gameObject;
 
-				if( current.GetComponent< Overlay >() != null ) {
+				if( current.GetComponent< Overlay >() != null && current.GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) {
 
-					if( current.GetComponent< Overlay >().Model == OverlayType.Tree ) return;
+					tileInfoPanel.SetActive ( false );
+					castleInfoPanel.SetActive ( true );
 
-					if( current.GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) {
+				} else if( current.GetComponent< Overlay >() != null && current.GetComponent< Overlay >().Model == OverlayType.Tree ) {
 
-						castleInfoPanel.SetActive ( true );
-
-					}
+					tileInfoPanel.SetActive ( false );
+					castleInfoPanel.SetActive ( false );
 
 				} else {
-					
+
+					tileInfoPanel.SetActive ( true );
 					castleInfoPanel.SetActive ( false );
 					
 				}
@@ -83,7 +87,7 @@ public class TileManager : MonoBehaviour {
 
 	}
 
-	public GameObject GetCurrent() {
+	public static GameObject GetCurrent() {
 
 		return current;
 

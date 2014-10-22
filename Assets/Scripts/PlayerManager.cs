@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
-	private static byte turn = 1;
+	private bool runOnce = false;
 
+	private static byte turn = 1;
 	private static int[] units = new int[3];
 
 	public Vector2 FriendlyTownLocation;
@@ -21,6 +22,35 @@ public class PlayerManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (runOnce == false) {
+
+			int mapW = (int)TileManager.MapSize.x;
+			int mapH = (int)TileManager.MapSize.y;
+			
+			for( int y = 0; y < mapH; y++ ) {
+				
+				for( int x = 0; x < mapW; x++ ) {
+					
+					TileManager.GetMapData ()[ x, y ].layer = 0;
+					
+				}
+				
+			}
+			
+			for( int y = 0; y < mapH; y++ ) {
+				
+				for( int x = 0; x < mapW; x++ ) {
+					
+					TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().OnTurnUpdate ();
+					
+				}
+				
+			}
+
+			runOnce = true;
+
+		}
 
 		if( Input.GetKeyDown ( KeyCode.Space ) && turn == 1 ) {
 
