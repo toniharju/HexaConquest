@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Mechanics : MonoBehaviour {
 
-	// Use this for initialization
 
 
 	//Boolean for turns	
@@ -13,60 +12,26 @@ public class Mechanics : MonoBehaviour {
 	public int d3 = Random.Range(1,3);
 	public int d6 = Random.Range(1,6);
 	public int hitDice;
+	
+	//Array for healths 
 
-	
-	
-	//Power
-	public int meleePower;
-	public int rangedPower;
-	public int horsePower;
-	
-	//Healths
-	public int meleeHealth = 10;
-	public int rangedHealth = 5;
-	public int horseHealth = 20;
-	
-	//Unit count
-	public int meleeCount = 0;
-	public int rangedCount = 0;
-	public int horseCount = 0;
-	public int totalCount = 0;
-	public int maxCount = 16;
+	public int [] unitHealth = new int[3];
+	public int [] unitPower = new int[3];
 
 	void Start () {
 
 		activeTurn = true;
-		hitDice = Random.Range (1, totalCount);
 
-		totalCount = meleeCount + rangedCount + horseCount;
+		hitDice = Random.Range (0, 15);//Replace 15 with the army's lenght / total count
 
-
-		//Check that the tile's unit count isn't greater than the max unit count
-
-		if (totalCount > maxCount) {
-			/*Placeholder for A HUUUUUGE warning sign, that says
-			 * "Fuck off, we are full!!!"
-			 * 
-			 * 
-			 * */
-				} else {
-			/* Placeholder for succesful check
-			 * 
-			 * 
-			 * */
+		unitHealth [(int)UnitType.Footman] = 10;
+		unitHealth [(int)UnitType.Archer] = 5;
+		unitHealth [(int)UnitType.Lancer] = 20;
 
 
-				}
-
-		//Power calculation for active turn (Attacker)
-		if (activeTurn == true){
-
-			meleePower = (10 + d3)-d6;
-			rangedPower = (15 + d3)-d6;
-			horsePower =(20 + d3)-d6;
-		} 
-
-
+		unitPower [(int) UnitType.Footman] = (10 + d3)-d6;
+		unitPower [(int) UnitType.Archer] = (15 + d3)-d6;
+		unitPower [(int) UnitType.Lancer] = (20 + d3)-d6;
 	
 	}
 	

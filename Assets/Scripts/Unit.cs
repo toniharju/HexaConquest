@@ -5,7 +5,7 @@ public enum UnitType {
 	
 	Footman,
 	Archer,
-	Horseman
+	Lancer
 	
 }
 
