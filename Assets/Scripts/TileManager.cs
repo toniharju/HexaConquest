@@ -1,118 +1,133 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using System.Collections;
+using UnityEngine.EventSystems;
 
-public class TileManager {
+public class TileManager : MonoBehaviour {
 
-	private static GameObject castleInfoPanel;
-	private static GameObject tileInfoPanel;
+	private bool mRunOnce = false;
 
-	private static GameObject current;
-	private static Color originalColor;
+	private PlayerManager mPlayerManager;
 
-	public static Vector2 MapSize = new Vector2( 10, 10 );
-	private static GameObject[,] mapData;
-	private static byte[,] ownerData;
+	private GameObject mHoverTile;
+	private GameObject mSelectedTile;
+
+	private GameObject[,] mTiles = null;
+	
+	public Vector2 MapSize = new Vector2( 10, 10 );
 
 	// Use this for initialization
-	public static void Initialize () {
+	void Start () {
 	
-		castleInfoPanel = GameObject.Find ( "CastleInfoPanel" );
-		castleInfoPanel.SetActive ( false );
+		mPlayerManager = GetComponent< PlayerManager >();
 
-		tileInfoPanel = GameObject.Find ( "TileInfoPanel" );
-		tileInfoPanel.SetActive ( false );
+		mTiles = new GameObject[ (int)MapSize.x, (int)MapSize.y ];
 
 	}
 	
 	// Update is called once per frame
-	public static void Update () {
-	
-		if ( current != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
+	void Update () {
 
-			tileInfoPanel.SetActive ( false );
-			castleInfoPanel.SetActive ( false );
+		if( !Turn.IsPlayer () ) return;
 
-			current.renderer.material.color = originalColor;
-			current = null;
+		if( !mRunOnce ) {
+
+			GameObject[] tiles = GameObject.FindGameObjectsWithTag ( "Tile" );
+		
+			foreach( GameObject tile in tiles ) {
+			
+				int x = (int)tile.GetComponent< Position >().Location.x;
+				int y = (int)tile.GetComponent< Position >().Location.y;
+				
+				mTiles[ x, y ] = tile;
+
+			}
+
+			mRunOnce = true;
 
 		}
 
-		if ( Input.GetMouseButtonUp ( 0 ) && !EventSystem.current.IsPointerOverGameObject () ) {
+		if( mSelectedTile != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
 			
+			mSelectedTile.GetComponent< Tile >().OnDeselect ();
+			mSelectedTile = null;
+			
+		}
+
+		if( !EventSystem.current.IsPointerOverGameObject () ) {
+
 			RaycastHit hit;
-			
+
 			if ( Physics.Raycast ( Camera.main.ScreenPointToRay ( Input.mousePosition ), out hit ) ) {
 
-				if( current != null ) {
-					current.renderer.material.color = originalColor;
+				if( mHoverTile == null ) mHoverTile = hit.transform.gameObject;
+				if( mHoverTile != null ) {
+
+					if( !mHoverTile.Equals ( hit.transform.gameObject ) ) mHoverTile = hit.transform.gameObject;
+
+					mHoverTile.GetComponent< Tile >().OnHover();
+
 				}
 
-				current = hit.transform.gameObject;
+				if( Input.GetMouseButtonUp ( 0 ) ) {
 
-				if( current.GetComponent< Overlay >() != null && current.GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) {
+					if( mPlayerManager.GetState () == State.SelectTile ) {
 
-					tileInfoPanel.SetActive ( false );
-					castleInfoPanel.SetActive ( true );
+						ResetSelectedTile ();
+						mPlayerManager.SetState ( State.Wait );
 
-				} else if( current.GetComponent< Overlay >() != null && current.GetComponent< Overlay >().Model == OverlayType.Tree ) {
+					} else if ( mPlayerManager.GetState () == State.Wait ) {
 
-					tileInfoPanel.SetActive ( false );
-					castleInfoPanel.SetActive ( false );
+						if( mSelectedTile != null ) mSelectedTile.GetComponent< Tile >().OnDeselect ();
+						mSelectedTile = hit.transform.gameObject;
 
-				} else {
+					}
 
-					tileInfoPanel.SetActive ( true );
-					castleInfoPanel.SetActive ( false );
-					
 				}
-
-				originalColor = current.renderer.material.color;
-
-				current.renderer.material.color = new Color( 0.0f, 0.74f, 0.95f );
-				
+			
 			} else {
 
-				if ( current != null ) {
-					
-					current.renderer.material.color = originalColor;
+				mHoverTile = null;
 
-					current = null;
-					
+				if( mSelectedTile != null && Input.GetMouseButtonUp ( 0 ) ) {
+
+					mSelectedTile.GetComponent< Tile >().OnDeselect ();
+					mSelectedTile = null;
+
 				}
 
 			}
-			
+
 		}
 
-	}
-
-	public static GameObject GetCurrent() {
-
-		return current;
+		if( mSelectedTile != null ) mSelectedTile.GetComponent< Tile >().OnSelect ();
 
 	}
 
-	public static void InitializeMap() {
+	public void ResetSelectedTile() {
 
-		if( mapData == null )
-			mapData = new GameObject[ (int)MapSize.x, (int)MapSize.y ];
+		if( mSelectedTile == null ) return;
 
-		if( ownerData == null )
-			ownerData = new byte[ (int)MapSize.x, (int)MapSize.y ];
+		mSelectedTile.GetComponent< Tile >().OnDeselect ();
+		mSelectedTile = null;
 
 	}
 
-	public static GameObject[,] GetMapData() {
+	public GameObject GetSelectedTile() {
+
+		return mSelectedTile;
+
+	}
+
+	public GameObject GetHoverTile() {
+
+		return mHoverTile;
+
+	}
+
+	public GameObject[,] GetTiles() {
 		
-		return mapData;
+		return mTiles;
 		
-	}
-
-	public static byte[,] GetOwnerData() {
-
-		return ownerData;
-
 	}
 
 }

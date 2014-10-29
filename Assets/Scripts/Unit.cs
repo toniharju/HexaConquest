@@ -5,33 +5,33 @@ public enum UnitType {
 	
 	Footman,
 	Archer,
-	Horseman
+	Lancer
 	
 }
 
 public class Unit {
 	
-	private UnitType unitType;
-	private byte owner;
+	private UnitType mUnitType;
+	private byte mOwner;
 
-	public void SetOwner( byte o ) {
+	public void SetOwner( byte owner ) {
 
-		owner = o;
+		mOwner = owner;
 
 	}
 
 	public byte GetOwner() {
 
-		return owner;
+		return mOwner;
 
 	}
 
-	public void SetUnitType( UnitType type ) {
+	public void SetUnitType( UnitType unitType ) {
 
-		unitType = type;
+		mUnitType = unitType;
 
 	}
 
-	public UnitType GetUnitType() { return unitType; }
+	public UnitType GetUnitType() { return mUnitType; }
 
 }

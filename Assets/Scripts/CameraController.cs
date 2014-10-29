@@ -9,7 +9,6 @@ public class CameraController : MonoBehaviour {
 
 	public Vector2 ZoomClamp = new Vector2( 1.0f, 5.0f );
 
-	private Vector3 clickMousePosition;
 
 	// Use this for initialization
 	void Start () {
