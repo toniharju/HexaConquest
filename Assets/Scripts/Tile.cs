@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour {
 
 	private int mCaptureProgress = 0;
 
+	public List< Unit > TempUnits = new List< Unit >();
 	public List< Unit > Units = new List< Unit >();
 
 	public int GoldValue = 1;
@@ -58,6 +59,8 @@ public class Tile : MonoBehaviour {
 
 		if( mPlayerManager.GetState () == State.SelectTile ) {
 
+			bool allowed = true;
+
 			GameObject from = mTileManager.GetSelectedTile ();
 			GameObject to = gameObject;
 
@@ -72,77 +75,106 @@ public class Tile : MonoBehaviour {
 
 			}
 
+			UnitType type = UnitType.Footman;
+			int delta_max = 0;
+
 			if( mPlayerManager.GetStateParameters ().Equals ( "move_footman" ) ) {
 				
-				//Get these values from Mechanics
-				if( ( delta_x == 1 || delta_y == 1 ) ) {
+				delta_max = 1;
+				type = UnitType.Footman;
 
-					if( Input.GetMouseButtonUp ( 0 ) ) {
-
-						//Display arrow here
-					
-						Unit unit = new Unit();
-						unit.SetUnitType ( UnitType.Footman );
-						unit.SetOwner ( 1 );
-
-						if( from.transform.FindChild( "OverlayFriendlyTown" ) ) {
-					
-							Units.Add ( unit );
-
-							mPlayerManager.RemovePlayerUnit ( UnitType.Footman, 1 );
-
-						} else {
-
-							if( transform.FindChild ( "OverlayFriendlyTown" ) ) {
-
-								mPlayerManager.SetState ( State.Wait );
-								return;
-
-							}
-
-							List< Unit > unit_list = from.GetComponent< Tile >().Units;
-
-							bool foundUnit = false;
-
-							foreach( Unit u in unit_list ) {
-
-								if( u.GetUnitType() == UnitType.Footman ) {
-
-									foundUnit = true;
-									unit_list.Remove ( u );
-									break;
-
-								}
-
-							}
-
-							if( !foundUnit ) {
-
-								mPlayerManager.SetState ( State.Wait );
-								return;
-
-							}
-
-							Units.Add ( unit );
-
-						}
-
-					}
-					
-				} else {
-					
-					//Display some indicator that this is a illegal move
-					
-				}
-				
 			} else if( mPlayerManager.GetStateParameters ().Equals ( "move_archer" ) ) {
 
-
+				delta_max = 1;
+				type = UnitType.Archer;
 
 			} else if( mPlayerManager.GetStateParameters ().Equals ( "move_lancer" ) ) {
 
+				delta_max = 1;
+				type = UnitType.Lancer;
 
+			}
 
+			if( ( delta_x == 0 && delta_y == 0 ) || transform.FindChild( "OverlayFriendlyTown" ) ) {
+
+				allowed = false;
+
+			}
+
+			//Get these values from Mechanics
+			if( ( delta_x < delta_max + 1 ) && ( delta_y < delta_max + 1 ) ) {
+
+				//Display arrow here
+				GameObject arrow = null;
+
+				if( from.transform.FindChild ( "Arrow" ) == null ) {
+					arrow = new GameObject( "Arrow" );
+					arrow.transform.parent = from.transform;
+					arrow.transform.localPosition = Vector3.zero;
+					arrow.transform.localRotation = Quaternion.identity;
+					arrow.transform.localScale = new Vector3( 1, 1, 1 );
+					GameObject temp = Instantiate ( Resources.Load< GameObject >( "Prefabs/ShortArrow" ) ) as GameObject;
+					temp.name = "Short";
+					temp.transform.parent = arrow.transform;
+					temp.transform.localPosition = new Vector3( 0, -0.01f, 0.006f );
+					temp.transform.localRotation = Quaternion.Euler ( 0, 180, 180 );
+					temp.transform.localScale = new Vector3( 0.005f, 0.008f, 1 );
+				} else {
+					arrow = from.transform.FindChild ( "Arrow" ).gameObject;
+				}
+
+				Vector3 delta = transform.position - from.transform.position;
+				float angle = Mathf.Atan2 ( delta.z, delta.x ) * Mathf.Rad2Deg;
+				arrow.transform.localRotation = Quaternion.Euler ( 0, 0, 270 - angle );
+
+				if( Input.GetMouseButtonUp ( 1 ) && allowed ) {
+
+					if( arrow != null ) Destroy( arrow );
+
+					Unit unit = new Unit();
+					unit.SetUnitType ( type );
+					unit.SetOwner ( 1 );
+					
+					if( from.transform.FindChild( "OverlayFriendlyTown" ) ) {
+						
+						TempUnits.Add ( unit );
+						mPlayerManager.RemovePlayerUnit ( type, 1 );
+						
+					} else {
+						
+						List< Unit > unit_list = from.GetComponent< Tile >().Units;
+						
+						bool foundUnit = false;
+						
+						foreach( Unit u in unit_list ) {
+							
+							if( u.GetUnitType() == type ) {
+								
+								foundUnit = true;
+								unit_list.Remove ( u );
+								break;
+								
+							}
+							
+						}
+						
+						if( !foundUnit ) {
+							
+							mPlayerManager.SetState ( State.Wait );
+							return;
+							
+						}
+						
+						TempUnits.Add ( unit );
+
+					}
+					
+				}
+				
+			} else {
+				
+				//Display some indicator that this is a illegal move
+				
 			}
 			
 		}
@@ -187,6 +219,18 @@ public class Tile : MonoBehaviour {
 	}
 
 	public void OnTurn() {
+
+		if ( TempUnits.Count > 0 ) {
+
+			foreach( Unit u in TempUnits ) {
+
+				Units.Add ( u );
+
+			}
+
+			TempUnits.Clear ();
+
+		}
 
 		if( transform.FindChild ( "OverlayFriendlyTown" ) ) {
 
@@ -281,52 +325,6 @@ public class Tile : MonoBehaviour {
 	public void MoveUnit( UnitType type, Vector2 position ) {
 
 
-
-	}
-
-	public void MoveUnitFrom( UnitType type, Vector2 position ) {
-
-		/*int x = (int)position.x;
-		int y = (int)position.y;
-		Debug.Log (Mathf.Abs (transform.position.x - position.x));
-		if ( Mathf.Abs (transform.position.x - position.x ) > 1 || Mathf.Abs ( transform.position.y - position.y ) > 1 || Units.Count == 16 ) return;
-
-		Overlay overlay = TileManager.GetMapData ()[ x, y ].GetComponent< Overlay >();
-
-		if( overlay != null && overlay.Model == OverlayType.FriendlyTown ) {
-
-			Unit u = new Unit();
-			u.SetOwner ( PlayerManager.GetTurn () );
-			u.SetUnitType( type );
-
-			Units.Add ( u );
-
-		} else {
-
-			if( Units.Count == 16 ) return;
-			
-			Unit u = new Unit();
-			u.SetOwner ( PlayerManager.GetTurn () );
-			u.SetUnitType( type );
-			
-			Units.Add ( u );
-
-			int i = 0;
-			foreach( Unit temp in TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().Units ) {
-
-				if( temp.GetUnitType () == type ) {
-
-					TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().Units.RemoveAt( i );
-
-					return;
-
-				}
-
-				i++;
-
-			}
-
-		}*/
 
 	}
 
