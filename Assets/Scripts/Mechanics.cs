@@ -49,9 +49,9 @@ public class Mechanics : MonoBehaviour {
 
 		//Damage calculation and targeting
 		attackTarget = hitDice;
-		attackHealth = GetType (UnitType);
-		attackPower = GetType (UnitType);
-		defendHealth = GetType (UnitType);
+		//attackHealth = GetType (UnitType);
+		//attackPower = GetType (UnitType);
+		//defendHealth = GetType (UnitType);
 			
 	
 	}
