@@ -70,21 +70,17 @@ public class TileManager : MonoBehaviour {
 
 				if( Input.GetMouseButtonUp ( 0 ) ) {
 
-					if( mSelectedTile != null ) {
+					if( mPlayerManager.GetState () == State.SelectTile ) {
 
-						if( mSelectedTile.transform.FindChild ( "Arrow" ) != null ) Destroy ( mSelectedTile.transform.FindChild ( "Arrow" ).gameObject );
-						mSelectedTile.GetComponent< Tile >().OnDeselect ();
+						ResetSelectedTile ();
+						mPlayerManager.SetState ( State.Wait );
+
+					} else if ( mPlayerManager.GetState () == State.Wait ) {
+
+						if( mSelectedTile != null ) mSelectedTile.GetComponent< Tile >().OnDeselect ();
+						mSelectedTile = hit.transform.gameObject;
 
 					}
-
-					mSelectedTile = hit.transform.gameObject;
-
-					mPlayerManager.SetState ( State.Wait );
-
-				} else if( Input.GetMouseButtonUp ( 1 ) && mPlayerManager.GetState () == State.SelectTile ) {
-						
-					ResetSelectedTile ();
-					mPlayerManager.SetState ( State.Wait );
 
 				}
 			
