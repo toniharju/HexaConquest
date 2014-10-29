@@ -62,10 +62,18 @@ public class Tile : MonoBehaviour {
 			bool allowed = true;
 
 			GameObject from = mTileManager.GetSelectedTile ();
-			GameObject to = gameObject;
 
-			int delta_x = (int)Mathf.Abs ( from.GetComponent< Position >().Location.x - to.GetComponent< Position >().Location.x );
-			int delta_y = (int)Mathf.Abs ( from.GetComponent< Position >().Location.y - to.GetComponent< Position >().Location.y );
+			int delta_x = (int)( GetComponent< Position >().Location.x - from.GetComponent< Position >().Location.x );
+			int delta_y = (int)( GetComponent< Position >().Location.y - from.GetComponent< Position >().Location.y );
+
+			if( GetComponent< Position >().Location.x % 2 == 1 ) {
+				if( delta_x != 0 && delta_y == 1 ) { delta_x = 10; delta_y = 10; }
+			} else {
+				if( delta_x != 0 && delta_y == -1 ) { delta_x = 10; delta_y = 10; }
+			}
+
+			delta_x = (int)Mathf.Abs ( delta_x );
+			delta_y = (int)Mathf.Abs ( delta_y );
 
 			if( Units.Count == 16 ) {
 
@@ -95,7 +103,7 @@ public class Tile : MonoBehaviour {
 
 			}
 
-			if( ( delta_x == 0 && delta_y == 0 ) || transform.FindChild( "OverlayFriendlyTown" ) ) {
+			if( ( delta_x == 0 && delta_y == 0 ) || transform.FindChild( "OverlayFriendlyTown" ) != null ) {
 
 				allowed = false;
 
@@ -103,8 +111,7 @@ public class Tile : MonoBehaviour {
 
 			//Get these values from Mechanics
 			if( ( delta_x < delta_max + 1 ) && ( delta_y < delta_max + 1 ) ) {
-
-				//Display arrow here
+			
 				GameObject arrow = null;
 
 				if( from.transform.FindChild ( "Arrow" ) == null ) {
