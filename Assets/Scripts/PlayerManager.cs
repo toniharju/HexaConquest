@@ -1,109 +1,162 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+
+public enum State {
+
+	Wait,
+	SelectTile
+
+}
 
 public class PlayerManager : MonoBehaviour {
 
-	private bool runOnce = false;
+	private TileManager mTileManager;
 
-	private static byte turn = 1;
-	private static int[] units = new int[3];
+	private State mState = State.Wait;
+	private string mStateParameters;
 
-	public Vector2 FriendlyTownLocation;
-
-	public int Gold = 0;
+	private int mPlayerGold = 0;
+	private int[] mPlayerArmy = new int[3];
+	
+	private int mAIGold = 0;
+	private int[] mAIArmy = new int[3];
 
 	// Use this for initialization
 	void Start () {
-	
-
-
+		
+		mTileManager = GameObject.Find ( "Manager" ).GetComponent< TileManager >();
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if (runOnce == false) {
-
-			int mapW = (int)TileManager.MapSize.x;
-			int mapH = (int)TileManager.MapSize.y;
+		if( Input.GetKeyDown ( KeyCode.Space ) ) {
 			
-			for( int y = 0; y < mapH; y++ ) {
+			int width = (int) GameObject.Find ( "Manager" ).GetComponent< TileManager >().MapSize.x;
+			int height = (int) GameObject.Find ( "Manager" ).GetComponent< TileManager >().MapSize.y;
+			
+			if( Turn.IsPlayer () ) {
 				
-				for( int x = 0; x < mapW; x++ ) {
+				for( int y = 0; y < height; y++ ) {
 					
-					TileManager.GetMapData ()[ x, y ].layer = 0;
+					for( int x = 0; x < width; x++ ) {
+						
+						mTileManager.GetTiles() [ x, y ].GetComponent< Tile >().OnTurn ();
+						
+					}
 					
 				}
+
+				mTileManager.ResetSelectedTile ();
+				Turn.SetTurn ( Turn.AI );
+				
+			} else {
+				
+				Turn.SetTurn ( Turn.Player );
 				
 			}
 			
-			for( int y = 0; y < mapH; y++ ) {
-				
-				for( int x = 0; x < mapW; x++ ) {
-					
-					TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().OnTurnUpdate ();
-					
-				}
-				
-			}
+		}
+		
+	}
 
-			runOnce = true;
+	public void AddFootman() {
+		
+		if( Turn.IsPlayer () ) {
+			
+			mPlayerArmy[ (int)UnitType.Footman ]++;
+			
+		} else {
+			
+			mAIArmy[ (int)UnitType.Footman ]++;
+			
+		}
+		
+	}
+	
+	public void AddArcher() {
+		
+		if( Turn.IsPlayer () ) {
+			
+			mPlayerArmy[ (int)UnitType.Archer ]++;
+			
+		} else {
+			
+			mAIArmy[ (int)UnitType.Archer ]++;
+			
+		}
+		
+	}
+	
+	public void AddLancer() {
+		
+		if( Turn.IsPlayer () ) {
+			
+			mPlayerArmy[ (int)UnitType.Lancer ]++;
+			
+		} else {
+			
+			mAIArmy[ (int)UnitType.Lancer ]++;
+			
+		}
+		
+	}
+	
+	public void MoveFootman() {
+
+		if( Turn.IsPlayer () ) {
+
+			if( mTileManager.GetSelectedTile () != null ) {
+
+				if( mTileManager.GetSelectedTile ().transform.FindChild ( "OverlayFriendlyTown" ) != null ) {
+
+					if( mPlayerArmy[ (int)UnitType.Footman ] > 0 ) {
+						
+						SetState( State.SelectTile );
+						SetStateParameters ( "move_footman" );
+						
+					}
+
+				} else {
+
+					if( mTileManager.GetSelectedTile ().GetComponent< Tile >().Units.Count > 0 ) {
+
+						SetState ( State.SelectTile );
+						SetStateParameters ( "move_footman" );
+
+					}
+
+				}
+
+			}
+			
+		} else {
 
 		}
 
-		if( Input.GetKeyDown ( KeyCode.Space ) && turn == 1 ) {
+	}
 
-			int mapW = (int)TileManager.MapSize.x;
-			int mapH = (int)TileManager.MapSize.y;
-			
-			for( int y = 0; y < mapH; y++ ) {
-				
-				for( int x = 0; x < mapW; x++ ) {
-					
-					TileManager.GetMapData ()[ x, y ].layer = 0;
-					
-				}
-				
-			}
+	public void SetStateParameters( string parameters ) { mStateParameters = parameters; }
+	public string GetStateParameters() { return mStateParameters; }
 
-			for( int y = 0; y < mapH; y++ ) {
+	public void SetState( State state ) { mState = state; }
+	public State GetState() { return mState; }
 
-				for( int x = 0; x < mapW; x++ ) {
+	public void RemovePlayerUnit( UnitType type, int ammount ) {
 
-					TileManager.GetMapData ()[ x, y ].GetComponent< Tile >().OnTurnUpdate ();
-
-				}
-
-			}
-
-			turn = 2;
-
-		} else if( turn == 2 ) {
-
-			turn = 1;
-
-		}
+		if( mPlayerArmy[ (int)type ] > 0 ) mPlayerArmy[ (int)type ] -= ammount;
 
 	}
 
-	public void AddFootmanSquad() {
-
-		units[ (int)UnitType.Footman ]++;
-
-		TileManager.GetMapData()[ (int)FriendlyTownLocation.x, (int)FriendlyTownLocation.y + 1 ].GetComponent< Tile >().MoveUnitFrom ( UnitType.Footman, FriendlyTownLocation );
-
-	}
-
-	public static int GetAllUnits( UnitType type ) {
-
-		return units[ (int)type ];
-
-	}
-
-	public static byte GetTurn() { return turn; }
-
-	public bool IsPlayerTurn() { return turn == 1; }
-	public bool IsAITurn() { return turn == 2; }
-
+	public void SetPlayerGold( int gold ) { mPlayerGold = gold; }
+	public int GetPlayerGold() { return mPlayerGold; }
+	
+	public void SetAIGold( int gold ) { mAIGold = gold; }
+	public int GetAIGold() { return mAIGold; }
+	
+	public int[] GetPlayerArmy() { return mPlayerArmy; }
+	
+	public int[] GetAIArmy() { return mAIArmy; }
+	
 }
