@@ -25,7 +25,7 @@ public class PlayerManager : MonoBehaviour {
 	void Start () {
 		
 		mTileManager = GameObject.Find ( "Manager" ).GetComponent< TileManager >();
-		
+
 	}
 	
 	// Update is called once per frame
@@ -37,7 +37,17 @@ public class PlayerManager : MonoBehaviour {
 			int height = (int) GameObject.Find ( "Manager" ).GetComponent< TileManager >().MapSize.y;
 			
 			if( Turn.IsPlayer () ) {
-				
+
+				for( int y = 0; y < height; y++ ) {
+					
+					for( int x = 0; x < width; x++ ) {
+						
+						mTileManager.GetTiles() [ x, y ].layer = 0;
+						
+					}
+					
+				}
+
 				for( int y = 0; y < height; y++ ) {
 					
 					for( int x = 0; x < width; x++ ) {

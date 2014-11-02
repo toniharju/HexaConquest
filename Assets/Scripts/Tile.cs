@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Tile : MonoBehaviour {
 
+	private GameObject mArrow = null;
+
 	private TileManager mTileManager;
 	private PlayerManager mPlayerManager;
 
@@ -59,6 +61,8 @@ public class Tile : MonoBehaviour {
 
 		if( mPlayerManager.GetState () == State.SelectTile ) {
 
+			Cursor.SetCursor( mTileManager.GetMainCursor (), Vector2.zero, CursorMode.Auto );
+
 			bool allowed = true;
 
 			GameObject from = mTileManager.GetSelectedTile ();
@@ -77,9 +81,8 @@ public class Tile : MonoBehaviour {
 
 			if( Units.Count == 16 ) {
 
-				//Le error, this tile is not available to move to, show it!
-				mPlayerManager.SetState ( State.Wait );
-				return;
+				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
+				allowed = false;
 
 			}
 
@@ -103,40 +106,47 @@ public class Tile : MonoBehaviour {
 
 			}
 
-			if( ( delta_x == 0 && delta_y == 0 ) || transform.FindChild( "OverlayFriendlyTown" ) != null ) {
+			if( ( delta_x == 0 && delta_y == 0 ) || transform.childCount > 0 ) {
 
+				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
 				allowed = false;
 
 			}
 
-			//Get these values from Mechanics
-			if( ( delta_x < delta_max + 1 ) && ( delta_y < delta_max + 1 ) ) {
-			
-				GameObject arrow = null;
+			if( ( delta_x < delta_max + 1 ) && ( delta_y < delta_max + 1 ) && allowed ) {
 
 				if( from.transform.FindChild ( "Arrow" ) == null ) {
-					arrow = new GameObject( "Arrow" );
-					arrow.transform.parent = from.transform;
-					arrow.transform.localPosition = Vector3.zero;
-					arrow.transform.localRotation = Quaternion.identity;
-					arrow.transform.localScale = new Vector3( 1, 1, 1 );
+					mArrow = new GameObject( "Arrow" );
+					mArrow.transform.parent = from.transform;
+					mArrow.transform.localPosition = Vector3.zero;
+					mArrow.transform.localRotation = Quaternion.identity;
+					mArrow.transform.localScale = new Vector3( 1, 1, 1 );
 					GameObject temp = Instantiate ( Resources.Load< GameObject >( "Prefabs/ShortArrow" ) ) as GameObject;
 					temp.name = "Short";
-					temp.transform.parent = arrow.transform;
+					temp.layer = 8;
+					temp.transform.parent = mArrow.transform;
 					temp.transform.localPosition = new Vector3( 0, -0.01f, 0.006f );
 					temp.transform.localRotation = Quaternion.Euler ( 0, 180, 180 );
 					temp.transform.localScale = new Vector3( 0.005f, 0.008f, 1 );
 				} else {
-					arrow = from.transform.FindChild ( "Arrow" ).gameObject;
+					mArrow = from.transform.FindChild ( "Arrow" ).gameObject;
 				}
 
 				Vector3 delta = transform.position - from.transform.position;
 				float angle = Mathf.Atan2 ( delta.z, delta.x ) * Mathf.Rad2Deg;
-				arrow.transform.localRotation = Quaternion.Euler ( 0, 0, 270 - angle );
+				mArrow.transform.localRotation = Quaternion.Euler ( 0, 0, 270 - angle );
 
-				if( Input.GetMouseButtonUp ( 1 ) && allowed ) {
+				if( Input.GetMouseButtonUp ( 1 ) ) {
 
-					if( arrow != null ) Destroy( arrow );
+					if( mArrow != null ) Destroy( mArrow );
+					Cursor.SetCursor( mTileManager.GetMainCursor (), Vector2.zero, CursorMode.Auto );
+
+					if( !allowed ) {
+
+						mPlayerManager.SetState ( State.Wait );
+						return;
+
+					}
 
 					Unit unit = new Unit();
 					unit.SetUnitType ( type );
@@ -179,8 +189,10 @@ public class Tile : MonoBehaviour {
 				}
 				
 			} else {
-				
-				//Display some indicator that this is a illegal move
+
+				if( from.transform.FindChild ( "Arrow" ) != null ) Destroy( from.transform.FindChild ( "Arrow" ).gameObject );
+
+				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
 				
 			}
 			
@@ -188,14 +200,33 @@ public class Tile : MonoBehaviour {
 
 	}
 	
-	private void UpdateFog() {
+	public void UpdateFog() {
 
-		/*int x = (int)Position.x;
-		int y = (int)Position.y;
+		int x = (int)GetComponent< Position >().Location.x;
+		int y = (int)GetComponent< Position >().Location.y;
 
-		if( ( GetComponent< Overlay >() != null && GetComponent< Overlay >().Model == OverlayType.FriendlyTown ) ||
+		if( transform.FindChild ( "OverlayFriendlyTown" ) != null ||
 		    Owner == 1 ||
 		    Units.Count > 0 ) {
+
+			if( Units.Count > 0 ) {
+
+				bool notOwn = true;
+
+				foreach( Unit u in Units ) {
+
+					if( u.GetOwner () == 1 ) {
+
+						notOwn = false;
+						break;
+
+					}
+
+				}
+
+				if( notOwn ) return;
+
+			}
 
 			for( int ox = -1; ox < 2; ox++ ) {
 				
@@ -204,8 +235,8 @@ public class Tile : MonoBehaviour {
 					int dx = x + ox;
 					int dy = y + oy;
 
-					if( dx > -1 && dx < TileManager.MapSize.x &&
-					    dy > -1 && dy < TileManager.MapSize.y && TileManager.GetMapData()[ dx, dy ].layer != 8 ) {
+					if( dx > -1 && dx < mTileManager.MapSize.x &&
+					    dy > -1 && dy < mTileManager.MapSize.y && mTileManager.GetTiles()[ dx, dy ].layer != 8 ) {
 
 						if( x % 2 == 1 ) {
 							if( ox != 0 && oy == -1 ) continue;
@@ -213,7 +244,7 @@ public class Tile : MonoBehaviour {
 							if( ox != 0 && oy == 1 ) continue;
 						}
 
-						TileManager.GetMapData ()[ dx, dy ].layer = 8;
+						mTileManager.GetTiles ()[ dx, dy ].layer = 8;
 						
 					}
 					
@@ -221,7 +252,7 @@ public class Tile : MonoBehaviour {
 				
 			}
 			
-		}*/
+		}
 
 	}
 
@@ -280,6 +311,8 @@ public class Tile : MonoBehaviour {
 			if( transform.FindChild ( "Units" ) != null ) Destroy ( transform.FindChild ( "Units" ).gameObject );
 			
 		}
+
+		UpdateFog ();
 		
 	}
 

@@ -15,6 +15,9 @@ public class TileManager : MonoBehaviour {
 	
 	public Vector2 MapSize = new Vector2( 10, 10 );
 
+	public Texture2D MainCursor;
+	public Texture2D ImpassableCursor;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -40,6 +43,14 @@ public class TileManager : MonoBehaviour {
 				
 				mTiles[ x, y ] = tile;
 
+			}
+
+			foreach( GameObject tile in tiles ) {
+
+				tile.GetComponent< Tile >().UpdateFog ();
+
+
+				
 			}
 
 			mRunOnce = true;
@@ -108,6 +119,9 @@ public class TileManager : MonoBehaviour {
 		if( mSelectedTile != null ) mSelectedTile.GetComponent< Tile >().OnSelect ();
 
 	}
+
+	public Texture2D GetMainCursor() { return MainCursor; }
+	public Texture2D GetImpassableCursor() { return ImpassableCursor; }
 
 	public void ResetSelectedTile() {
 
