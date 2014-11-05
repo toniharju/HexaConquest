@@ -8,13 +8,11 @@ public class InterfaceManager : MonoBehaviour {
 	private GameObject mCastleInfoPanel;
 	private GameObject mTileInfoPanel;
 	private TileManager mTileManager;
-	private PlayerManager mPlayerManager;
 
 	// Use this for initialization
 	public void Start () {
 	
 		mTileManager = GetComponent< TileManager >();
-		mPlayerManager = GetComponent< PlayerManager >();
 
 		mCastleInfoPanel = GameObject.Find ( "CastleInfoPanel" );
 		mCastleInfoPanel.SetActive ( false );
@@ -31,7 +29,7 @@ public class InterfaceManager : MonoBehaviour {
 
 		GameObject selected_object = mTileManager.GetSelectedTile ();
 
-		if ( selected_object != null && mPlayerManager.GetState () == State.Wait ) {
+		if ( selected_object != null ) {
 
 			if( selected_object.transform.FindChild ( "OverlayFriendlyTown" ) != null ) {
 				

@@ -61,6 +61,8 @@ public class TileManager : MonoBehaviour {
 
 			if( mPlayerManager.GetState () == State.SelectTile ) {
 
+				if( mSelectedTile.transform.FindChild ( "Arrow" ) != null ) Destroy ( mSelectedTile.transform.FindChild ( "Arrow" ).gameObject );
+
 				ResetSelectedTile ();
 				mPlayerManager.SetState ( State.Wait );
 
@@ -98,13 +100,31 @@ public class TileManager : MonoBehaviour {
 
 					mSelectedTile = hit.transform.gameObject;
 
-					mPlayerManager.SetState ( State.Wait );
+					if( mSelectedTile.transform.childCount > 0 ) {
+
+						if( mSelectedTile.transform.FindChild ( "OverlayFriendlyTown" ) ||
+						    mSelectedTile.transform.FindChild ( "Unit3" ) || 
+						    mSelectedTile.transform.FindChild ( "Unit6" ) ||
+						    mSelectedTile.transform.FindChild ( "Unit9" ) ) {
+
+							mPlayerManager.SetState ( State.Wait );
+
+						} else {
+
+							mSelectedTile = null;
+
+						}
+
+					} else {
+
+						mPlayerManager.SetState ( State.Wait );
+
+					}
 
 				} else if( Input.GetMouseButtonUp ( 1 ) && mPlayerManager.GetState () == State.SelectTile ) {
 
 					if( mSelectedTile.transform.FindChild ( "Arrow" ) != null ) Destroy ( mSelectedTile.transform.FindChild ( "Arrow" ).gameObject );
 
-					ResetSelectedTile ();
 					mPlayerManager.SetState ( State.Wait );
 
 					Cursor.SetCursor ( GetMainCursor (), Vector2.zero, CursorMode.Auto );

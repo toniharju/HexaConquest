@@ -27,7 +27,7 @@ public class PlayerManager : MonoBehaviour {
 	private int mAIGold = 0;
 	private int[] mAIArmy = new int[3];
 
-	public GameObject FootmanNumberText;
+	public GameObject CastleFootmanNumberText;
 
 	// Use this for initialization
 	void Start () {
@@ -45,7 +45,7 @@ public class PlayerManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		FootmanNumberText.GetComponent< Text >().text = mPlayerArmy[ (int)UnitType.Footman ].ToString ();
+		CastleFootmanNumberText.GetComponent< Text >().text = mPlayerArmy[ (int)UnitType.Footman ].ToString ();
 
 		if( Input.GetKeyDown ( KeyCode.Space ) ) {
 			
