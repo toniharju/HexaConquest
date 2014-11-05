@@ -6,10 +6,8 @@ TILES:
 
 UI:
 
-- Change the top tile to wooden boards.
-- Remove the emblem from the pop-up window.
-- Come up with better embedded icon backgrounds.
-- Add mini-icons for units for inspect purposes ( Both castle window and tile window ). 
+
+
 
 
 
@@ -30,9 +28,7 @@ gold income from that tile, troops in that tile, troop status ( moved / not move
 Castle tile selected:
 --------------------
 
-Display garrisoned units like units in other tiles.
-Display unit recruiting window with unit prices and unit queue 
-( 1 unit only, selecting another unit replaces the queued unit ).
+
 
 
 
