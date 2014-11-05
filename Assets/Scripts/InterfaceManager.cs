@@ -2,7 +2,9 @@
 using System.Collections;
 
 public class InterfaceManager : MonoBehaviour {
-	
+
+	private GameObject mFootmanCountText;
+
 	private GameObject mCastleInfoPanel;
 	private GameObject mTileInfoPanel;
 	private TileManager mTileManager;
