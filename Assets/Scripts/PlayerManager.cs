@@ -10,7 +10,7 @@ public enum State {
 }
 
 public class PlayerManager : MonoBehaviour {
-
+	
 	private GameObject mGoldIncomeText;
 	private GameObject mGoldTotalText;
 
@@ -27,13 +27,15 @@ public class PlayerManager : MonoBehaviour {
 	private int mAIGold = 0;
 	private int[] mAIArmy = new int[3];
 
+	public GameObject FootmanNumberText;
+
 	// Use this for initialization
 	void Start () {
-		
+
 		mTileManager = GameObject.Find ( "Manager" ).GetComponent< TileManager >();
 
-		mGoldIncomeText = GameObject.Find ("GoldIncomeText");
-		mGoldTotalText = GameObject.Find ("GoldTotalText");
+		mGoldIncomeText = GameObject.Find ( "GoldIncomeText" );
+		mGoldTotalText = GameObject.Find ( "GoldTotalText" );
 
 		mGoldTotalText.GetComponent< Text >().text = "total: " + mPlayerGold;
 		mGoldIncomeText.GetComponent< Text >().text = "per turn: " + mPlayerGoldPerTurn;
@@ -42,6 +44,8 @@ public class PlayerManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		FootmanNumberText.GetComponent< Text >().text = mPlayerArmy[ (int)UnitType.Footman ].ToString ();
 
 		if( Input.GetKeyDown ( KeyCode.Space ) ) {
 			
