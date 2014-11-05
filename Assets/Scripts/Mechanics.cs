@@ -21,6 +21,9 @@ public class Mechanics : MonoBehaviour {
 	//Establish Arrays for unit's count, health and power
 	public int [] unitHealth = new int[3];
 	public int [] unitPower = new int[3];
+	public int [] unitCaptureRate = new int[3]; 
+	public int [] unitPrice = new int[3]; 
+	public int [] unitMovement = new int[3];
 
 
 
@@ -46,12 +49,25 @@ public class Mechanics : MonoBehaviour {
 		unitPower [(int) UnitType.Archer] = (15 + d3)-d6;
 		unitPower [(int) UnitType.Lancer] = (20 + d3)-d6;
 
+		//Array for capture rates
+		unitCaptureRate [(int) UnitType.Footman] = 20;
+		unitCaptureRate [(int) UnitType.Archer] = 10;
+		unitCaptureRate [(int) UnitType.Lancer] = 5;
+
+		//Array for unit prices
+		unitPrice [(int) UnitType.Footman] = 10;
+		unitPrice [(int) UnitType.Archer] = 30;
+		unitPrice [(int) UnitType.Lancer] = 50; 
+
+		//Array for movement points
+		unitMovement [(int) UnitType.Footman] = 1;
+		unitMovement [(int) UnitType.Archer] = 1;
+		unitMovement [(int) UnitType.Lancer] = 2;
+
+
 
 		//Damage calculation and targeting
 		attackTarget = hitDice;
-		//attackHealth = GetType (UnitType);
-		//attackPower = GetType (UnitType);
-		//defendHealth = GetType (UnitType);
 			
 	
 	}
