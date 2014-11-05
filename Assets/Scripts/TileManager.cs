@@ -58,10 +58,18 @@ public class TileManager : MonoBehaviour {
 		}
 
 		if( mSelectedTile != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
+
+			if( mPlayerManager.GetState () == State.SelectTile ) {
+
+				ResetSelectedTile ();
+				mPlayerManager.SetState ( State.Wait );
+
+			} else {
+
+				ResetSelectedTile ();
 			
-			mSelectedTile.GetComponent< Tile >().OnDeselect ();
-			mSelectedTile = null;
-			
+			}
+
 		}
 
 		if( !EventSystem.current.IsPointerOverGameObject () ) {
@@ -98,6 +106,8 @@ public class TileManager : MonoBehaviour {
 
 					ResetSelectedTile ();
 					mPlayerManager.SetState ( State.Wait );
+
+					Cursor.SetCursor ( GetMainCursor (), Vector2.zero, CursorMode.Auto );
 
 				}
 			
