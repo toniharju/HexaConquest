@@ -116,7 +116,7 @@ public class Tile : MonoBehaviour {
 
 			}
 
-			if( ( delta_x == 0 && delta_y == 0 ) || transform.childCount > 0 ) {
+			if( ( delta_x == 0 && delta_y == 0 ) || ( transform.childCount > 0 ) ) {
 
 				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
 				allowed = false;
