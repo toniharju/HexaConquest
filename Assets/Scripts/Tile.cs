@@ -118,8 +118,12 @@ public class Tile : MonoBehaviour {
 
 			if( ( delta_x == 0 && delta_y == 0 ) || transform.childCount > 0 ) {
 
-				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
-				allowed = false;
+				if( !( transform.FindChild ( "Unit3" ) || transform.FindChild ( "Unit6" ) || transform.FindChild ( "Unit9" ) ) || from == gameObject ) {
+
+					Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
+					allowed = false;
+
+				}
 
 			}
 
