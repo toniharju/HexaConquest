@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public enum State {
@@ -10,12 +11,17 @@ public enum State {
 
 public class PlayerManager : MonoBehaviour {
 
+	private GameObject mGoldIncomeText;
+	private GameObject mGoldTotalText;
+
 	private TileManager mTileManager;
 
 	private State mState = State.Wait;
 	private string mStateParameters;
 
-	private int mPlayerGold = 0;
+	private int mPlayerGoldPerTurn = 1;
+
+	private int mPlayerGold = 1;
 	private int[] mPlayerArmy = new int[3];
 	
 	private int mAIGold = 0;
@@ -25,6 +31,12 @@ public class PlayerManager : MonoBehaviour {
 	void Start () {
 		
 		mTileManager = GameObject.Find ( "Manager" ).GetComponent< TileManager >();
+
+		mGoldIncomeText = GameObject.Find ("GoldIncomeText");
+		mGoldTotalText = GameObject.Find ("GoldTotalText");
+
+		mGoldTotalText.GetComponent< Text >().text = "total: " + mPlayerGold;
+		mGoldIncomeText.GetComponent< Text >().text = "per turn: " + mPlayerGoldPerTurn;
 
 	}
 	
@@ -48,15 +60,23 @@ public class PlayerManager : MonoBehaviour {
 					
 				}
 
+				int tempGold = mPlayerGold;
+
 				for( int y = 0; y < height; y++ ) {
 					
 					for( int x = 0; x < width; x++ ) {
-						
+
 						mTileManager.GetTiles() [ x, y ].GetComponent< Tile >().OnTurn ();
-						
+
 					}
 					
 				}
+
+				tempGold = mPlayerGold - tempGold;
+				mPlayerGoldPerTurn = tempGold;
+
+				mGoldTotalText.GetComponent< Text >().text = "total: " + mPlayerGold;
+				mGoldIncomeText.GetComponent< Text >().text = "per turn: " + mPlayerGoldPerTurn;
 
 				mTileManager.ResetSelectedTile ();
 				Turn.SetTurn ( Turn.AI );
@@ -73,12 +93,17 @@ public class PlayerManager : MonoBehaviour {
 
 	public void AddFootman() {
 		
-		if( Turn.IsPlayer () ) {
-			
+		if( Turn.IsPlayer () && mPlayerGold >= 1 ) {
+
+			mPlayerGold -= 1;
 			mPlayerArmy[ (int)UnitType.Footman ]++;
+
+			mGoldTotalText.GetComponent< Text >().text = "total: " + mPlayerGold;
+			mGoldIncomeText.GetComponent< Text >().text = "per turn: " + mPlayerGoldPerTurn;
 			
-		} else {
-			
+		} else if( Turn.IsAI () && mAIGold >= 1 ) {
+
+			mAIGold -= 1;
 			mAIArmy[ (int)UnitType.Footman ]++;
 			
 		}
@@ -158,6 +183,8 @@ public class PlayerManager : MonoBehaviour {
 		if( mPlayerArmy[ (int)type ] > 0 ) mPlayerArmy[ (int)type ] -= ammount;
 
 	}
+
+	public int GetPlayerGoldPerTurn() { return mPlayerGoldPerTurn; }
 
 	public void SetPlayerGold( int gold ) { mPlayerGold = gold; }
 	public int GetPlayerGold() { return mPlayerGold; }

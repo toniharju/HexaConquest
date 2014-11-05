@@ -26,34 +26,44 @@ public class Tile : MonoBehaviour {
 
 	}
 
+	void Update() {
+
+		if (mTileManager.GetSelectedTile () == gameObject && mPlayerManager.GetState () == State.Wait) {
+
+			renderer.material.color = new Color( 0.0f, 0.74f, 0.95f );
+
+		} else {
+
+			switch (Owner) {
+				
+				default:
+				case 0:
+					renderer.material.color = new Color (0.8f, 0.8f, 0.8f);
+					break;
+				
+				case 1:
+					renderer.material.color = new Color (0, 1, 0);
+					break;
+				
+				case 2:
+					renderer.material.color = new Color (1, 0, 0);
+					break;
+				
+			}
+
+		}
+
+	}
+
 	public void OnSelect() {
 
-		if( mPlayerManager.GetState () == State.Wait ) {
-				
-			renderer.material.color = new Color( 0.0f, 0.74f, 0.95f );
-			
-		}
+
 
 	}
 
 	public void OnDeselect() {
 
-		switch( Owner ) {
-			
-			default:
-			case 0:
-				renderer.material.color = new Color( 0.8f, 0.8f, 0.8f );
-				break;
-			
-			case 1:
-				renderer.material.color = new Color( 0, 1, 0 );
-				break;
-			
-			case 2:
-				renderer.material.color = new Color( 1, 0, 0 );
-				break;
-			
-		}
+
 		
 	}
 	
@@ -79,7 +89,7 @@ public class Tile : MonoBehaviour {
 			delta_x = (int)Mathf.Abs ( delta_x );
 			delta_y = (int)Mathf.Abs ( delta_y );
 
-			if( Units.Count == 16 ) {
+			if( Units.Count + TempUnits.Count >= 16 ) {
 
 				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
 				allowed = false;
@@ -121,13 +131,11 @@ public class Tile : MonoBehaviour {
 					mArrow.transform.localPosition = Vector3.zero;
 					mArrow.transform.localRotation = Quaternion.identity;
 					mArrow.transform.localScale = new Vector3( 1, 1, 1 );
-					GameObject temp = Instantiate ( Resources.Load< GameObject >( "Prefabs/ShortArrow" ) ) as GameObject;
+					GameObject temp = Utils.InstantiateLocal ( mArrow, "Prefabs/ShortArrow", new Vector3( 0, -0.01f, 0.006f ),
+					                        											   Quaternion.Euler ( 0, 180, 180 ),
+					                        											   new Vector3( 0.005f, 0.008f, 1 ) );
 					temp.name = "Short";
 					temp.layer = 8;
-					temp.transform.parent = mArrow.transform;
-					temp.transform.localPosition = new Vector3( 0, -0.01f, 0.006f );
-					temp.transform.localRotation = Quaternion.Euler ( 0, 180, 180 );
-					temp.transform.localScale = new Vector3( 0.005f, 0.008f, 1 );
 				} else {
 					mArrow = from.transform.FindChild ( "Arrow" ).gameObject;
 				}
@@ -258,6 +266,23 @@ public class Tile : MonoBehaviour {
 
 	public void OnTurn() {
 
+		//Update Capture
+		if ( Units.Count > 0 ) {
+			
+			if( Units[0].GetOwner () == 1 ) {
+				
+				//Get multiplier from Mechanics
+				mCaptureProgress -= Units.Count * 200;
+				
+			} else if( Units[0].GetOwner () == 2 ) {
+				
+				//Get multiplier from Mechanics
+				mCaptureProgress += Units.Count * 200;
+				
+			}
+			
+		}
+
 		if ( TempUnits.Count > 0 ) {
 
 			foreach( Unit u in TempUnits ) {
@@ -270,45 +295,55 @@ public class Tile : MonoBehaviour {
 
 		}
 
-		if( transform.FindChild ( "OverlayFriendlyTown" ) ) {
+		if (mCaptureProgress <= -CaptureValue) {
+		
+			mCaptureProgress = -CaptureValue;
+			Owner = 1;
 
+		} else if (mCaptureProgress >= CaptureValue) {
 
+			mCaptureProgress = CaptureValue;
+			Owner = 2;
 
 		}
 
-		if( Units.Count > 0 && Units.Count < 6 ) {
+		//Update Gold
+		if ( Owner == 1 ) {
+
+			mPlayerManager.SetPlayerGold ( mPlayerManager.GetPlayerGold () + GoldValue );
+
+		} else if ( Owner == 2 ) {
+
+			mPlayerManager.SetAIGold ( mPlayerManager.GetAIGold () + GoldValue );
+
+		}
+
+		if( Units.Count > 0 && Units.Count < 6 && transform.FindChild ( "Unit3" ) == null ) {
 			
-			if( transform.FindChild ( "Units" ) != null ) Destroy ( transform.FindChild ( "Units" ).gameObject );
-			GameObject temp = Instantiate ( Resources.Load< GameObject >( "Prefabs/Units/Unit3" ) ) as GameObject;
-			temp.name = "Units";
-			temp.transform.parent = gameObject.transform;
-			temp.transform.localPosition = Vector3.zero;
-			temp.transform.localRotation = Quaternion.identity;
-			temp.transform.localScale = new Vector3( 1, 1, 1 );
+			if( transform.FindChild ( "Unit6" ) != null ) Destroy ( transform.FindChild ( "Unit6" ).gameObject );
+			if( transform.FindChild ( "Unit9" ) != null ) Destroy ( transform.FindChild ( "Unit9" ).gameObject );
+			GameObject temp = Utils.InstantiateLocal ( gameObject, "Prefabs/Units/Unit3", Vector3.zero, Quaternion.identity, new Vector3( 1, 1, 1 ) );
+			temp.name = "Unit3";
 			
-		} else if( Units.Count > 5 && Units.Count < 11 ) {
+		} else if( Units.Count > 5 && Units.Count < 11 && transform.FindChild ( "Unit6" ) == null ) {
 			
-			if( transform.FindChild ( "Units" ) != null ) Destroy ( transform.FindChild ( "Units" ).gameObject );
-			GameObject temp = Instantiate ( Resources.Load< GameObject >( "Prefabs/Units/Unit6" ) ) as GameObject;
-			temp.name = "Units";
-			temp.transform.parent = gameObject.transform;
-			temp.transform.localPosition = Vector3.zero;
-			temp.transform.localRotation = Quaternion.identity;
-			temp.transform.localScale = new Vector3( 1, 1, 1 );
+			if( transform.FindChild ( "Unit3" ) != null ) Destroy ( transform.FindChild ( "Unit3" ).gameObject );
+			if( transform.FindChild ( "Unit9" ) != null ) Destroy ( transform.FindChild ( "Unit9" ).gameObject );
+			GameObject temp = Utils.InstantiateLocal ( gameObject, "Prefabs/Units/Unit6", Vector3.zero, Quaternion.identity, new Vector3( 1, 1, 1 ) );
+			temp.name = "Unit6";
 			
-		} else if( Units.Count > 10 && Units.Count < 17 ) {
+		} else if( Units.Count > 10 && Units.Count < 17 && transform.FindChild ( "Unit9" ) == null ) {
 			
-			if( transform.FindChild ( "Units" ) != null ) Destroy ( transform.FindChild ( "Units" ).gameObject );
-			GameObject temp = Instantiate ( Resources.Load< GameObject >( "Prefabs/Units/Unit9" ) ) as GameObject;
-			temp.name = "Units";
-			temp.transform.parent = gameObject.transform;
-			temp.transform.localPosition = Vector3.zero;
-			temp.transform.localRotation = Quaternion.identity;
-			temp.transform.localScale = new Vector3( 1, 1, 1 );
+			if( transform.FindChild ( "Unit3" ) != null ) Destroy ( transform.FindChild ( "Unit3" ).gameObject );
+			if( transform.FindChild ( "Unit6" ) != null ) Destroy ( transform.FindChild ( "Unit6" ).gameObject );
+			GameObject temp = Utils.InstantiateLocal ( gameObject, "Prefabs/Units/Unit9", Vector3.zero, Quaternion.identity, new Vector3( 1, 1, 1 ) );
+			temp.name = "Unit9";
 			
-		} else {
-			
-			if( transform.FindChild ( "Units" ) != null ) Destroy ( transform.FindChild ( "Units" ).gameObject );
+		} else if( Units.Count == 0 ) {
+
+			if( transform.FindChild ( "Unit3" ) != null ) Destroy ( transform.FindChild ( "Unit3" ).gameObject );
+			if( transform.FindChild ( "Unit6" ) != null ) Destroy ( transform.FindChild ( "Unit6" ).gameObject );
+			if( transform.FindChild ( "Unit9" ) != null ) Destroy ( transform.FindChild ( "Unit9" ).gameObject );
 			
 		}
 
@@ -316,55 +351,9 @@ public class Tile : MonoBehaviour {
 		
 	}
 
-	public void OnTurnUpdate() {
-	
-		/*if( ( Owner == 0 || Owner != PlayerManager.GetTurn () ) && Units.Count > 0 ) {
-
-			if( PlayerManager.GetTurn () == 1 ) {
-
-				captureProgress -= 200;
-
-			} else {
-
-			}
-
-			if (captureProgress <= -CaptureValue) {
-				
-				captureProgress = -CaptureValue;
-				Owner = 1;
-				TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 1;
-				
-			} else if (captureProgress >= CaptureValue) {
-				
-				captureProgress = CaptureValue;
-				Owner = 2;
-				TileManager.GetOwnerData() [ (int)Position.x, (int)Position.y ] = 2;
-				
-			}
-
-		}
-
-		if( Owner == 0 ) {
-			renderer.material.color = new Color( 0.8f, 0.8f, 0.8f );
-		} else if( Owner == 1 ) {
-			renderer.material.color = new Color( 0.0f, 1.0f, 0.0f );
-		} else if( Owner == 2 ) {
-			renderer.material.color = new Color( 1.0f, 0.0f, 0.0f );
-		}
-
-		UpdateFog ();*/
-
-	}
-
 	public List< Unit > GetUnits() {
 
 		return Units;
-
-	}
-
-	public void MoveUnit( UnitType type, Vector2 position ) {
-
-
 
 	}
 
