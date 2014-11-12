@@ -2094,6 +2094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1001 &150211185
 Prefab:
   m_ObjectHideFlags: 0
@@ -2439,6 +2440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1001 &163716447
 Prefab:
   m_ObjectHideFlags: 0
@@ -2679,6 +2681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1001 &217788590
 Prefab:
   m_ObjectHideFlags: 0
@@ -3468,6 +3471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1 &295098841
 GameObject:
   m_ObjectHideFlags: 0
@@ -3540,6 +3544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1001 &298957779
 Prefab:
   m_ObjectHideFlags: 0
@@ -3860,6 +3865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1001 &339451003
 Prefab:
   m_ObjectHideFlags: 0
@@ -8142,6 +8148,10 @@ MonoBehaviour:
   MapSize: {x: 10, y: 10}
   MainCursor: {fileID: 2800000, guid: bec097fc6353d9649a409390f5ac9d3b, type: 3}
   ImpassableCursor: {fileID: 2800000, guid: 372d95c4e9c7d944b857265b459433a2, type: 3}
+  TileFootmanNumberText: {fileID: 1795577893}
+  MoveFootmanButton: {fileID: 1007309254}
+  MoveArcherButton: {fileID: 1589300196}
+  MoveLancerButton: {fileID: 1428342230}
 --- !u!114 &800842520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8154,6 +8164,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CastleFootmanNumberText: {fileID: 439243758}
+  MoveFootmanButton: {fileID: 1490070713}
+  MoveArcherButton: {fileID: 778179431}
+  MoveLancerButton: {fileID: 1331680692}
 --- !u!1001 &802821228
 Prefab:
   m_ObjectHideFlags: 0
@@ -10841,6 +10854,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1001 &1077829401
 Prefab:
   m_ObjectHideFlags: 0
@@ -13589,6 +13603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1 &1336260928
 GameObject:
   m_ObjectHideFlags: 0
@@ -14038,6 +14053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 1
 --- !u!1 &1350122518
 GameObject:
   m_ObjectHideFlags: 0
@@ -14110,6 +14126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1 &1353864864
 GameObject:
   m_ObjectHideFlags: 0
@@ -18306,6 +18323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d16940db36af8544a1ef24a5ec94fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Clickable: 0
 --- !u!1 &1654758752
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum State {
 
@@ -17,7 +18,7 @@ public class PlayerManager : MonoBehaviour {
 	private TileManager mTileManager;
 
 	private State mState = State.Wait;
-	private string mStateParameters;
+	private Stack<object> mStateParameters = new Stack<object>();
 
 	private int mPlayerGoldPerTurn = 1;
 
@@ -28,6 +29,9 @@ public class PlayerManager : MonoBehaviour {
 	private int[] mAIArmy = new int[3];
 
 	public GameObject CastleFootmanNumberText;
+	public GameObject MoveFootmanButton;
+	public GameObject MoveArcherButton;
+	public GameObject MoveLancerButton;
 
 	// Use this for initialization
 	void Start () {
@@ -46,6 +50,23 @@ public class PlayerManager : MonoBehaviour {
 	void Update () {
 
 		CastleFootmanNumberText.GetComponent< Text >().text = mPlayerArmy[ (int)UnitType.Footman ].ToString ();
+
+		if (mPlayerArmy [(int)UnitType.Footman] > 0 && mStateParameters.Count < mPlayerArmy[(int)UnitType.Footman] )
+			MoveFootmanButton.GetComponent< Button > ().interactable = true;
+		else
+			MoveFootmanButton.GetComponent< Button > ().interactable = false;
+
+		if (mPlayerArmy [(int)UnitType.Archer] > 0 && mStateParameters.Count < mPlayerArmy[(int)UnitType.Archer] )
+			MoveArcherButton.GetComponent< Button > ().interactable = true;
+		else
+			MoveArcherButton.GetComponent< Button > ().interactable = false;
+
+		if (mPlayerArmy [(int)UnitType.Lancer] > 0 && mStateParameters.Count < mPlayerArmy[(int)UnitType.Lancer] )
+			MoveLancerButton.GetComponent< Button > ().interactable = true;
+		else
+			MoveLancerButton.GetComponent< Button > ().interactable = false;
+
+		if ( Input.GetKeyDown ( KeyCode.Escape ) ) ClearStateParameters ();
 
 		if( Input.GetKeyDown ( KeyCode.Space ) ) {
 			
@@ -148,12 +169,15 @@ public class PlayerManager : MonoBehaviour {
 
 			if( mTileManager.GetSelectedTile () != null ) {
 
+				MoveArcherButton.GetComponent< Button >().interactable = false;
+				MoveLancerButton.GetComponent< Button >().interactable = false;
+
 				if( mTileManager.GetSelectedTile ().transform.FindChild ( "OverlayFriendlyTown" ) != null ) {
 
 					if( mPlayerArmy[ (int)UnitType.Footman ] > 0 ) {
 						
 						SetState( State.SelectTile );
-						SetStateParameters ( "move_footman" );
+						SetStateParameter< UnitType > ( UnitType.Footman );
 						
 					}
 
@@ -162,7 +186,7 @@ public class PlayerManager : MonoBehaviour {
 					if( mTileManager.GetSelectedTile ().GetComponent< Tile >().Units.Count > 0 ) {
 
 						SetState ( State.SelectTile );
-						SetStateParameters ( "move_footman" );
+						SetStateParameter< UnitType > ( UnitType.Footman );
 
 					}
 
@@ -176,8 +200,17 @@ public class PlayerManager : MonoBehaviour {
 
 	}
 
-	public void SetStateParameters( string parameters ) { mStateParameters = parameters; }
-	public string GetStateParameters() { return mStateParameters; }
+	public void ClearStateParameters() { 
+
+		mStateParameters.Clear ();
+		MoveFootmanButton.GetComponent< Button > ().interactable = true;
+		MoveArcherButton.GetComponent< Button >().interactable = true;
+		MoveLancerButton.GetComponent< Button >().interactable = true;
+
+	}
+
+	public void SetStateParameter< T >( T parameter ) { mStateParameters.Push ((object)parameter); }
+	public Stack<object> GetStateParameters() { return mStateParameters; }
 
 	public void SetState( State state ) { mState = state; }
 	public State GetState() { return mState; }
