@@ -49,7 +49,13 @@ public class PlayerManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		CastleFootmanNumberText.GetComponent< Text >().text = mPlayerArmy[ (int)UnitType.Footman ].ToString ();
+		if (mStateParameters.Count > 0) {
+			UnitType type = (UnitType)mStateParameters.Peek ();
+			if( type == UnitType.Footman )
+				CastleFootmanNumberText.GetComponent< Text > ().text = mStateParameters.Count.ToString () + "/" + mPlayerArmy [(int)UnitType.Footman].ToString ();
+		} else {
+			CastleFootmanNumberText.GetComponent< Text > ().text = "0/" + mPlayerArmy [(int)UnitType.Footman].ToString ();
+		}
 
 		if (mPlayerArmy [(int)UnitType.Footman] > 0 && mStateParameters.Count < mPlayerArmy[(int)UnitType.Footman] )
 			MoveFootmanButton.GetComponent< Button > ().interactable = true;
@@ -66,10 +72,12 @@ public class PlayerManager : MonoBehaviour {
 		else
 			MoveLancerButton.GetComponent< Button > ().interactable = false;
 
-		if ( Input.GetKeyDown ( KeyCode.Escape ) ) ClearStateParameters ();
+		if ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetMouseButtonUp ( 1 ) ) ClearStateParameters ();
 
 		if( Input.GetKeyDown ( KeyCode.Space ) ) {
-			
+
+			ClearStateParameters ();
+
 			int width = (int) GameObject.Find ( "Manager" ).GetComponent< TileManager >().MapSize.x;
 			int height = (int) GameObject.Find ( "Manager" ).GetComponent< TileManager >().MapSize.y;
 			
