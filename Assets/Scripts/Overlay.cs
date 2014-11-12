@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Overlay : MonoBehaviour {
 
+	public bool Clickable = false;
+
 	// Update is called once per frame
 	void Update () {
 	

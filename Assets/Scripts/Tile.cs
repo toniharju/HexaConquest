@@ -97,23 +97,20 @@ public class Tile : MonoBehaviour {
 
 			}
 
-			UnitType type = UnitType.Footman;
+			UnitType type = (UnitType)mPlayerManager.GetStateParameters ().Peek ();
 			int delta_max = 0;
 
-			if( mPlayerManager.GetStateParameters ().Equals ( "move_footman" ) ) {
+			if( type == UnitType.Footman ) {
 				
 				delta_max = 1;
-				type = UnitType.Footman;
 
-			} else if( mPlayerManager.GetStateParameters ().Equals ( "move_archer" ) ) {
-
-				delta_max = 1;
-				type = UnitType.Archer;
-
-			} else if( mPlayerManager.GetStateParameters ().Equals ( "move_lancer" ) ) {
+			} else if( type == UnitType.Archer ) {
 
 				delta_max = 1;
-				type = UnitType.Lancer;
+
+			} else if( type == UnitType.Lancer ) {
+
+				delta_max = 1;
 
 			}
 
@@ -161,43 +158,49 @@ public class Tile : MonoBehaviour {
 
 					}
 
-					Unit unit = new Unit();
-					unit.SetUnitType ( type );
-					unit.SetOwner ( 1 );
+					foreach( UnitType temp_type in mPlayerManager.GetStateParameters () ) {
+
+						Unit unit = new Unit();
+						unit.SetUnitType ( temp_type );
+						unit.SetOwner ( 1 );
 					
-					if( from.transform.FindChild( "OverlayFriendlyTown" ) ) {
+						if( from.transform.FindChild( "OverlayFriendlyTown" ) ) {
 						
-						TempUnits.Add ( unit );
-						mPlayerManager.RemovePlayerUnit ( type, 1 );
+							TempUnits.Add ( unit );
+							mPlayerManager.RemovePlayerUnit ( type, 1 );
 						
-					} else {
+						} else {
 						
-						List< Unit > unit_list = from.GetComponent< Tile >().Units;
+							List< Unit > unit_list = from.GetComponent< Tile >().Units;
 						
-						bool foundUnit = false;
+							bool foundUnit = false;
 						
-						foreach( Unit u in unit_list ) {
+							foreach( Unit u in unit_list ) {
 							
-							if( u.GetUnitType() == type ) {
+								if( u.GetUnitType() == type ) {
 								
-								foundUnit = true;
-								unit_list.Remove ( u );
-								break;
+									foundUnit = true;
+									unit_list.Remove ( u );
+									break;
 								
+								}
+							
 							}
-							
-						}
 						
-						if( !foundUnit ) {
+							if( !foundUnit ) {
 							
-							mPlayerManager.SetState ( State.Wait );
-							return;
+								mPlayerManager.SetState ( State.Wait );
+								return;
 							
-						}
+							}
 						
-						TempUnits.Add ( unit );
+							TempUnits.Add ( unit );
+
+						}
 
 					}
+
+					mPlayerManager.ClearStateParameters();
 					
 				}
 				

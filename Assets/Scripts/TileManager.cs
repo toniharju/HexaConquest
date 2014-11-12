@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TileManager : MonoBehaviour {
 
@@ -17,6 +18,11 @@ public class TileManager : MonoBehaviour {
 
 	public Texture2D MainCursor;
 	public Texture2D ImpassableCursor;
+
+	public GameObject TileFootmanNumberText;
+	public GameObject MoveFootmanButton;
+	public GameObject MoveArcherButton;
+	public GameObject MoveLancerButton;
 
 	// Use this for initialization
 	void Start () {
@@ -48,8 +54,6 @@ public class TileManager : MonoBehaviour {
 			foreach( GameObject tile in tiles ) {
 
 				tile.GetComponent< Tile >().UpdateFog ();
-
-
 				
 			}
 
@@ -57,20 +61,7 @@ public class TileManager : MonoBehaviour {
 
 		}
 
-		if( mSelectedTile != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
 
-			if( mPlayerManager.GetState () == State.SelectTile ) {
-
-				ResetSelectedTile ();
-				mPlayerManager.SetState ( State.Wait );
-
-			} else {
-
-				ResetSelectedTile ();
-			
-			}
-
-		}
 
 		if( !EventSystem.current.IsPointerOverGameObject () ) {
 
@@ -97,14 +88,30 @@ public class TileManager : MonoBehaviour {
 					}
 
 					mSelectedTile = hit.transform.gameObject;
+					mSelectedTile.GetComponent< Tile > ().OnSelect ();
 
-					mPlayerManager.SetState ( State.Wait );
+					if( mSelectedTile.transform.childCount > 0 ) {
+
+						if( mSelectedTile.transform.GetChild ( 0 ).GetComponent< Overlay >().Clickable ) {
+
+							mPlayerManager.SetState ( State.Wait );
+
+						} else {
+
+							mSelectedTile = null;
+
+						}
+
+					} else {
+
+						mPlayerManager.SetState ( State.Wait );
+
+					}
 
 				} else if( Input.GetMouseButtonUp ( 1 ) && mPlayerManager.GetState () == State.SelectTile ) {
 
 					if( mSelectedTile.transform.FindChild ( "Arrow" ) != null ) Destroy ( mSelectedTile.transform.FindChild ( "Arrow" ).gameObject );
 
-					ResetSelectedTile ();
 					mPlayerManager.SetState ( State.Wait );
 
 					Cursor.SetCursor ( GetMainCursor (), Vector2.zero, CursorMode.Auto );
@@ -126,7 +133,30 @@ public class TileManager : MonoBehaviour {
 
 		}
 
-		if( mSelectedTile != null ) mSelectedTile.GetComponent< Tile >().OnSelect ();
+		if( mSelectedTile != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
+			
+			if( mPlayerManager.GetState () == State.SelectTile ) {
+				
+				if( mSelectedTile.transform.FindChild ( "Arrow" ) != null ) Destroy ( mSelectedTile.transform.FindChild ( "Arrow" ).gameObject );
+				
+				ResetSelectedTile ();
+				mPlayerManager.SetState ( State.Wait );
+				
+			} else {
+				
+				ResetSelectedTile ();
+				
+			}
+			
+		}
+
+		if (mSelectedTile != null) { 
+
+			int count = mSelectedTile.GetComponent< Tile >().Units.Count;
+
+			TileFootmanNumberText.GetComponent< Text >().text = count.ToString ();
+
+		}
 
 	}
 
