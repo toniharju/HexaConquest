@@ -131,10 +131,16 @@ public class TileManager : MonoBehaviour {
 
 			}
 
+		} else { 
+		
+			Cursor.SetCursor ( MainCursor, Vector2.zero, CursorMode.Auto );
+
 		}
 
 		if( mSelectedTile != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
-			
+
+			Cursor.SetCursor ( MainCursor, Vector2.zero, CursorMode.Auto );
+
 			if( mPlayerManager.GetState () == State.SelectTile ) {
 				
 				if( mSelectedTile.transform.FindChild ( "Arrow" ) != null ) Destroy ( mSelectedTile.transform.FindChild ( "Arrow" ).gameObject );
@@ -150,11 +156,55 @@ public class TileManager : MonoBehaviour {
 			
 		}
 
-		if (mSelectedTile != null) { 
+		if ( mSelectedTile != null ) { 
 
-			int count = mSelectedTile.GetComponent< Tile >().Units.Count;
+			int count_footman = 0;
+			int count_archer = 0;
+			int count_lancer = 0;
 
-			TileFootmanNumberText.GetComponent< Text >().text = count.ToString ();
+			foreach( Unit unit in mSelectedTile.GetComponent< Tile >().Units ) {
+
+				if( unit.GetUnitType () == UnitType.Footman )
+					count_footman++;
+				else if( unit.GetUnitType () == UnitType.Archer )
+					count_archer++;
+				else if( unit.GetUnitType () == UnitType.Lancer )
+					count_lancer++;
+
+			}
+
+			if( count_footman > 0 )
+				MoveFootmanButton.GetComponent< Button >().interactable = true;
+			else
+				MoveFootmanButton.GetComponent< Button >().interactable = false;
+
+			if( count_archer > 0 )
+				MoveArcherButton.GetComponent< Button >().interactable = true;
+			else
+				MoveArcherButton.GetComponent< Button >().interactable = false;
+
+			if( count_lancer > 0 )
+				MoveLancerButton.GetComponent< Button >().interactable = true;
+			else
+				MoveLancerButton.GetComponent< Button >().interactable = false;
+
+			if( mPlayerManager.GetStateParameters ().Count > 0 ) {
+
+				UnitType param_type = (UnitType)mPlayerManager.GetStateParameters ().Peek ();
+				if( param_type == UnitType.Footman ) {
+					if( mPlayerManager.GetStateParameters().Count >= count_footman ) MoveFootmanButton.GetComponent< Button >().interactable = false;
+					TileFootmanNumberText.GetComponent< Text >().text = mPlayerManager.GetStateParameters ().Count.ToString () + "/" + count_footman.ToString ();
+				} else if( param_type == UnitType.Archer ) {
+
+				} else if( param_type == UnitType.Lancer ) {
+
+				}
+
+			} else {
+
+				TileFootmanNumberText.GetComponent< Text >().text = "0/" + count_footman.ToString ();
+			
+			}
 
 		}
 
