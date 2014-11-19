@@ -66,8 +66,7 @@ public class Mechanics : MonoBehaviour {
 
 
 
-		//Damage calculation and targeting
-		attackTarget = hitDice;
+
 			
 	
 	}
