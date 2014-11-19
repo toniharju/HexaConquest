@@ -86,7 +86,9 @@ public class PlayerManager : MonoBehaviour {
 				for( int y = 0; y < height; y++ ) {
 					
 					for( int x = 0; x < width; x++ ) {
-						
+
+						if( mTileManager.GetTiles() [ x, y ] == null ) continue;
+
 						mTileManager.GetTiles() [ x, y ].layer = 0;
 						
 					}
@@ -98,6 +100,8 @@ public class PlayerManager : MonoBehaviour {
 				for( int y = 0; y < height; y++ ) {
 					
 					for( int x = 0; x < width; x++ ) {
+
+						if( mTileManager.GetTiles () [x, y ] == null ) continue;
 
 						mTileManager.GetTiles() [ x, y ].GetComponent< Tile >().OnTurn ();
 

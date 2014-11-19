@@ -252,7 +252,7 @@ public class Tile : MonoBehaviour {
 					int dy = y + oy;
 
 					if( dx > -1 && dx < mTileManager.MapSize.x &&
-					    dy > -1 && dy < mTileManager.MapSize.y && mTileManager.GetTiles()[ dx, dy ].layer != 8 ) {
+					    dy > -1 && dy < mTileManager.MapSize.y && mTileManager.GetTiles () [ dx, dy ] != null && mTileManager.GetTiles()[ dx, dy ].layer != 8 ) {
 
 						if( x % 2 == 1 ) {
 							if( ox != 0 && oy == -1 ) continue;
