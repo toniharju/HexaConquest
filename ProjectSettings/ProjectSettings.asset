@@ -12,7 +12,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: DefaultCompany
   productName: HexaConquest
-  defaultCursor: {fileID: 2800000, guid: 8737c539d1e8ce6469e6052d2d61064d, type: 3}
+  defaultCursor: {fileID: 2800000, guid: bec097fc6353d9649a409390f5ac9d3b, type: 3}
   cursorHotspot: {x: 0, y: 0}
   defaultScreenWidth: 1024
   defaultScreenHeight: 768

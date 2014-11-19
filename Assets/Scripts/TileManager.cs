@@ -27,6 +27,8 @@ public class TileManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		Cursor.SetCursor (MainCursor, Vector2.zero, CursorMode.ForceSoftware);
+
 		mPlayerManager = GetComponent< PlayerManager >();
 
 		mTiles = new GameObject[ (int)MapSize.x, (int)MapSize.y ];
@@ -114,7 +116,7 @@ public class TileManager : MonoBehaviour {
 
 					mPlayerManager.SetState ( State.Wait );
 
-					Cursor.SetCursor ( GetMainCursor (), Vector2.zero, CursorMode.Auto );
+					Cursor.SetCursor ( GetMainCursor (), Vector2.zero, CursorMode.ForceSoftware );
 
 				}
 			
@@ -133,13 +135,13 @@ public class TileManager : MonoBehaviour {
 
 		} else { 
 		
-			Cursor.SetCursor ( MainCursor, Vector2.zero, CursorMode.Auto );
+			Cursor.SetCursor ( MainCursor, Vector2.zero, CursorMode.ForceSoftware );
 
 		}
 
 		if( mSelectedTile != null && ( Input.GetKeyDown ( KeyCode.Escape ) || Input.GetKeyDown ( KeyCode.Space ) ) ) {
 
-			Cursor.SetCursor ( MainCursor, Vector2.zero, CursorMode.Auto );
+			Cursor.SetCursor ( MainCursor, Vector2.zero, CursorMode.ForceSoftware );
 
 			if( mPlayerManager.GetState () == State.SelectTile ) {
 				

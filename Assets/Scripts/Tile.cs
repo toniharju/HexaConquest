@@ -72,7 +72,7 @@ public class Tile : MonoBehaviour {
 
 		if( mPlayerManager.GetState () == State.SelectTile ) {
 
-			Cursor.SetCursor( mTileManager.GetMainCursor (), Vector2.zero, CursorMode.Auto );
+			Cursor.SetCursor( mTileManager.GetMainCursor (), Vector2.zero, CursorMode.ForceSoftware );
 
 			bool allowed = true;
 
@@ -92,7 +92,7 @@ public class Tile : MonoBehaviour {
 
 			if( Units.Count + TempUnits.Count >= 16 ) {
 
-				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
+				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.ForceSoftware );
 				allowed = false;
 
 			}
@@ -118,7 +118,7 @@ public class Tile : MonoBehaviour {
 
 				if( !( transform.FindChild ( "Unit3" ) || transform.FindChild ( "Unit6" ) || transform.FindChild ( "Unit9" ) ) || from == gameObject ) {
 
-					Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
+					Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.ForceSoftware );
 					allowed = false;
 
 				}
@@ -149,7 +149,7 @@ public class Tile : MonoBehaviour {
 				if( Input.GetMouseButtonUp ( 1 ) ) {
 
 					if( mArrow != null ) Destroy( mArrow );
-					Cursor.SetCursor( mTileManager.GetMainCursor (), Vector2.zero, CursorMode.Auto );
+					Cursor.SetCursor( mTileManager.GetMainCursor (), Vector2.zero, CursorMode.ForceSoftware );
 
 					if( !allowed ) {
 
@@ -208,7 +208,7 @@ public class Tile : MonoBehaviour {
 
 				if( from.transform.FindChild ( "Arrow" ) != null ) Destroy( from.transform.FindChild ( "Arrow" ).gameObject );
 
-				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.Auto );
+				Cursor.SetCursor( mTileManager.GetImpassableCursor (), Vector2.zero, CursorMode.ForceSoftware );
 				
 			}
 			
