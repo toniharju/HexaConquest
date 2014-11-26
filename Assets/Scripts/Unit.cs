@@ -2,36 +2,34 @@
 using System.Collections;
 
 public enum UnitType {
-	
+
 	Footman,
 	Archer,
 	Lancer
-	
+
 }
 
 public class Unit {
-	
-	private UnitType mUnitType;
-	private byte mOwner;
 
-	public void SetOwner( byte owner ) {
+	private int mOwner;
+	private UnitType mType;
 
+	public Unit( UnitType type, int owner ) {
+
+		mType = type;
 		mOwner = owner;
 
 	}
 
-	public byte GetOwner() {
+	public void SetUnitType( UnitType type ) {
 
-		return mOwner;
-
-	}
-
-	public void SetUnitType( UnitType unitType ) {
-
-		mUnitType = unitType;
+		mType = type;
 
 	}
 
-	public UnitType GetUnitType() { return mUnitType; }
+	public UnitType GetUnitType() { return mType; }
+
+	public void SetUnitOwner( int owner ) { mOwner = owner; }
+	public int GetUnitOwner() { return mOwner; }
 
 }

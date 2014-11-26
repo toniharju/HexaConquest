@@ -34,7 +34,7 @@ public class Mechanics : MonoBehaviour {
 		activeTurn = true;
 
 		//Array for unitCount
-		unitCount = mTileManager.GetSelectedTile ().GetComponent< Tile >().Units.Count;
+		//unitCount = mTileManager.GetSelectedTile ().GetComponent< Tile >().Units.Count;
 
 		//Establish dice for targets
 		hitDice = Random.Range (0, unitCount);
