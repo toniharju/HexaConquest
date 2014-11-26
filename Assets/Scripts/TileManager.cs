@@ -55,6 +55,12 @@ public class TileManager : MonoBehaviour {
 			mTilePanel.SetActive( false );
 			StateManager.Clear();
 
+			if( GameObject.Find( "Arrow" ) != null ) {
+
+				Destroy( GameObject.Find( "Arrow" ) );
+
+			}
+
 		}
 
         if( !EventSystem.current.IsPointerOverGameObject() ) {

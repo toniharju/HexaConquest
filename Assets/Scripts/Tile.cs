@@ -91,32 +91,36 @@ public class Tile : MonoBehaviour {
 
 		if( !isLand && !isMine && mUnits.Count > 0 ) {
 
-			GameObject units;
+			if( gameObject.layer == 8 ) {
 
-			if( transform.FindChild( "Units" ) != null ) {
+				GameObject units;
 
-				units = transform.FindChild( "Units" ).gameObject;
+				if( transform.FindChild( "Units" ) != null ) {
 
-			} else {
+					units = transform.FindChild( "Units" ).gameObject;
 
-				units = Instantiate( Resources.Load< Object >( "Prefabs/Units" ) ) as GameObject;
-				units.name = "Units";
-				units.transform.parent = transform;
-				units.transform.localPosition = Vector3.zero;
+				} else {
 
-			}
+					units = Instantiate( Resources.Load<Object>( "Prefabs/Units" ) ) as GameObject;
+					units.name = "Units";
+					units.transform.parent = transform;
+					units.transform.localPosition = Vector3.zero;
 
-			if( mUnits.Count > 11 ) {
+				}
 
-				units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit9" );
+				if( mUnits.Count > 11 ) {
 
-			} else if( mUnits.Count > 5 ) {
+					units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit9" );
 
-				units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit6" );
+				} else if( mUnits.Count > 5 ) {
 
-			} else {
+					units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit6" );
 
-				units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit3" );
+				} else {
+
+					units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit3" );
+
+				}
 
 			}
 
