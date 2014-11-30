@@ -28,6 +28,8 @@ public class Tile : MonoBehaviour {
 								new Color( 1.0f, 0, 0 ),		//AI
 								new Color( 0, 0.7f, 0.8f ) };	//Selected
 
+	private int captureProgress = 0;
+	private int mId;
 	private Vector2 mPosition = Vector2.zero;
 	private TileManager mTileManager;
 	private TurnManager mTurnManager;
@@ -89,9 +91,9 @@ public class Tile : MonoBehaviour {
 
 		}
 
-		if( !isLand && !isMine && mUnits.Count > 0 ) {
+		if( mUnits.Count > 0 ) {
 
-			if( gameObject.layer == 8 ) {
+			if( !isLand && !isMine ) {
 
 				GameObject units;
 
@@ -122,6 +124,24 @@ public class Tile : MonoBehaviour {
 
 				}
 
+			} else {
+
+				if( transform.FindChild( "Units" ) != null ) Destroy( transform.FindChild( "Units" ).gameObject );
+
+			}
+
+			foreach( Unit unit in mUnits ) {
+
+				if( unit.GetUnitOwner() == 1 ) {
+
+					captureProgress -= Mechanics.GetCaptureRate( unit.GetUnitType() );
+
+				} else {
+
+					captureProgress += Mechanics.GetCaptureRate( unit.GetUnitType() );
+
+				}
+
 			}
 
 		} else {
@@ -130,9 +150,73 @@ public class Tile : MonoBehaviour {
 
 		}
 
+		if( captureProgress <= -200 ) {
+
+			captureProgress = -200;
+			Owner = TileOwner.Player;
+
+		} else if( captureProgress >= 200 ) {
+
+			captureProgress = 200;
+			Owner = TileOwner.AI;
+
+		}
+
 		if( Owner == TileOwner.Player && mTurnManager.GetTurn() == Turn.Player ) {
 
 			GameObject.Find( "TownFriendly" ).GetComponent<Land>().AddGold( GoldValue );
+
+		}
+
+		if( ( Owner == TileOwner.Player ) ||
+			( mUnits.Count > 0 && mUnits[ 0 ].GetUnitOwner() == 1 ) ) {
+
+			GameObject canvas = GameObject.Find( "WorldCanvas" );
+
+			for( int dy = -1; dy < 2; dy++ ) {
+				
+				for( int dx = -1; dx < 2; dx++ ) {
+
+					int x = ( int )mPosition.x + dx;
+					int y = ( int )mPosition.y + dy;
+
+					if( dx != 0 ) {
+
+						if( x % 2 == 1 ) {
+
+							if( dy == 1 ) continue;
+
+						} else {
+
+							if( dy == -1 ) continue;
+
+						}
+
+					}
+
+					if( x > -1 && x < mTileManager.GetMap().Size.x && y > -1 && y < mTileManager.GetMap().Size.y ) {
+
+						mTileManager.GetMap().GetMapData()[ x, y ].layer = 8;
+
+						int id = mTileManager.GetMap().GetMapData()[ x, y ].GetComponent< Tile >().GetId();
+						int childCount = mTileManager.GetMap().GetMapData()[ x, y ].transform.childCount;
+						string childName = "";
+						TileOwner owner = mTileManager.GetMap().GetMapData()[ x, y ].GetComponent< Tile >().GetOwner();
+
+						if( childCount > 0 ) childName = mTileManager.GetMap().GetMapData()[ x, y ].transform.GetChild( 0 ).name;
+
+						if( mTileManager.GetMap().GetMapData()[ x, y ].gameObject.activeSelf && owner != TileOwner.Player ) {
+
+							if( childCount == 0 || childCount > 0 && childName != "Tree" )
+								canvas.transform.GetChild( id ).gameObject.SetActive( true );
+
+						}
+
+					}
+
+				}
+
+			}
 
 		}
 
@@ -159,6 +243,9 @@ public class Tile : MonoBehaviour {
 		return mPosition;
 
 	}
+
+	public void SetId( int id ) { mId = id; }
+	public int GetId() { return mId; }
 
 	public void SetOwner( TileOwner owner ) {
 
@@ -193,7 +280,7 @@ public class Tile : MonoBehaviour {
 
         if( isLand ) {
 
-            if( mUnits.Count == 100 ) return;
+            if( mUnits.Count == 32 ) return;
 
         } else {
 
@@ -210,7 +297,7 @@ public class Tile : MonoBehaviour {
 
         if( isLand ) {
 
-            if( mUnits.Count == 100 ) return;
+            if( mUnits.Count == 32 ) return;
 
         } else {
 
@@ -232,13 +319,15 @@ public class Tile : MonoBehaviour {
 
 	public void MoveArcher() {
 
-
+		StateManager.SetState( State.Move );
+		StateManager.AddParameter( "move_archer" );
 
 	}
 
 	public void MoveLancer() {
 
-
+		StateManager.SetState( State.Move );
+		StateManager.AddParameter( "move_lancer" );
 
 	}
 
@@ -258,6 +347,41 @@ public class Tile : MonoBehaviour {
 
     }
 
+	public void RemoveArcher() {
+
+		foreach( Unit unit in mUnits ) {
+
+			if( unit.GetUnitType() == UnitType.Archer ) {
+
+				mUnits.Remove( unit );
+				mUnitCount[ ( int )UnitType.Archer ]--;
+				break;
+
+			}
+
+		}
+
+	}
+
+	public void RemoveLancer() {
+
+		foreach( Unit unit in mUnits ) {
+
+			if( unit.GetUnitType() == UnitType.Lancer ) {
+
+				mUnits.Remove( unit );
+				mUnitCount[ ( int )UnitType.Lancer ]--;
+				break;
+
+			}
+
+		}
+
+	}
+
+	public bool IsLand() { return isLand; }
+
+	public List<Unit> GetUnits() { return mUnits; }
 	public int[] GetUnitCount() { return mUnitCount; }
 
 }

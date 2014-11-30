@@ -1,37 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Mechanics : MonoBehaviour {
+public class Mechanics {
 
-	private TileManager mTileManager;
-
-	//Boolean for turns	
-	public bool activeTurn = false;
+	private static TileManager mTileManager;
 
 	//establish HitDice, D4-, D6- and healths + power
-	public int d3 = Random.Range(1,3);
-	public int d6 = Random.Range(1,6);
-	public int hitDice;
-	public int attackPower;
-	public int attackHealth;
-	public int attackTarget;
-	public int defendHealth;
-	public int unitCount;
+	private static int hitDice;
+	private static int attackPower;
+	private static int attackHealth;
+	private static int attackTarget;
+	private static int defendHealth;
+	private static int unitCount;
 
 	//Establish Arrays for unit's count, health and power
-	public int [] unitHealth = new int[3];
-	public int [] unitPower = new int[3];
-	public int [] unitCaptureRate = new int[3]; 
-	public int [] unitPrice = new int[3]; 
-	public int [] unitMovement = new int[3];
+	private static int [] unitHealth = new int[3];
+	private static int [] unitPower = new int[3];
+	private static int [] unitCaptureRate = new int[3]; 
+	private static int [] unitPrice = new int[3]; 
+	private static int [] unitMovement = new int[3];
 
 
 
-	void Start () {
+	public static void Initialize () {
 
-		mTileManager = GameObject.Find ("Manager").GetComponent< TileManager > ();
-
-		activeTurn = true;
+		mTileManager = GameObject.Find ("Managers").GetComponent< TileManager > ();
 
 		//Array for unitCount
 		//unitCount = mTileManager.GetSelectedTile ().GetComponent< Tile >().Units.Count;
@@ -45,9 +38,9 @@ public class Mechanics : MonoBehaviour {
 		unitHealth [(int)UnitType.Lancer] = 20;
 
 		//Array for power
-		unitPower [(int) UnitType.Footman] = (10 + d3)-d6;
-		unitPower [(int) UnitType.Archer] = (15 + d3)-d6;
-		unitPower [(int) UnitType.Lancer] = (20 + d3)-d6;
+		unitPower [(int) UnitType.Footman] = 10;
+		unitPower [(int) UnitType.Archer] = 15;
+		unitPower [(int) UnitType.Lancer] = 20;
 
 		//Array for capture rates
 		unitCaptureRate [(int) UnitType.Footman] = 20;
@@ -63,16 +56,20 @@ public class Mechanics : MonoBehaviour {
 		unitMovement [(int) UnitType.Footman] = 1;
 		unitMovement [(int) UnitType.Archer] = 1;
 		unitMovement [(int) UnitType.Lancer] = 2;
-
-
-
-
-			
 	
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+	public static int GetHealth( UnitType type ) { return unitHealth[ (int)type ]; }
+
+	public static int GetPower( UnitType type ) {
+		
+		return ( unitPower[ (int)type ] + Random.Range( 1, 3 ) ) - Random.Range( 1, 6 );
 	
 	}
+
+	public static int GetCaptureRate( UnitType type ) { return unitCaptureRate[ ( int )type ]; }
+
+	public static int GetPrice( UnitType type ) { return unitPrice[ ( int )type ]; }
+	public static int GetMovement( UnitType type ) { return unitMovement[ ( int )type ]; }
+
 }

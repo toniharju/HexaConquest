@@ -5,6 +5,8 @@ using System.Collections;
 
 public class TileManager : MonoBehaviour {
 
+	private Map mMap;
+
 	private GameObject mCastlePanel;
 	private GameObject mTilePanel;
 
@@ -18,8 +20,13 @@ public class TileManager : MonoBehaviour {
 
 	public GameObject Arrow;
 
+	public Texture2D MainCursor;
+	public Texture2D CrossCursor;
+
 	// Use this for initialization
 	void Start () {
+
+		Mechanics.Initialize();
 
 		mCastlePanel = GameObject.Find( "CastlePanel" );
 		mTilePanel = GameObject.Find( "TilePanel" );
@@ -43,12 +50,16 @@ public class TileManager : MonoBehaviour {
 		mCastlePanel.SetActive( false );
 		mTilePanel.SetActive( false );
 
+		mMap = GameObject.Find( "MapData" ).GetComponent<Map>();
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 		if( Input.GetKeyDown( KeyCode.Escape ) ) {
+
+			Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
 
 			mSelectedTile = null;
 			mCastlePanel.SetActive( false );
@@ -73,6 +84,8 @@ public class TileManager : MonoBehaviour {
 					mHoverTile = hit.collider.gameObject;
 
                     if( Input.GetMouseButtonUp( 0 ) ) {
+
+						Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
 
 						if( mSelectedTile != null && GameObject.Find( "Arrow" ) != null ) {
 
@@ -129,6 +142,9 @@ public class TileManager : MonoBehaviour {
 
 				mHoverTile = null;
 
+				Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+				if( GameObject.Find( "Arrow" ) != null ) Destroy( GameObject.Find( "Arrow" ) );
+
 				if( Input.GetMouseButtonUp( 0 ) ) {
 
 					mSelectedTile = null;
@@ -149,44 +165,93 @@ public class TileManager : MonoBehaviour {
 
 			if( distance == 1 ) {
 
-				GameObject arrowTempParent;
+				if( mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 32 ) {
 
-				if( GameObject.Find( "Arrow" ) == null ) {
+					Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
 
-					arrowTempParent = new GameObject( "Arrow" );
-					arrowTempParent.transform.position = mSelectedTile.transform.position;
-					GameObject arrowTemp = Instantiate( Arrow ) as GameObject;
-					arrowTemp.transform.parent = arrowTempParent.transform;
-					arrowTemp.transform.localPosition = new Vector3( 0, 0.75f, 1.15f );
+					GameObject temp = GameObject.Find( "Arrow" );
+					if( temp != null ) Destroy( temp );
+
+				} else if( !mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 16 ) {
+
+					Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
+
+					GameObject temp = GameObject.Find( "Arrow" );
+					if( temp != null ) Destroy( temp );
 
 				} else {
 
-					arrowTempParent = GameObject.Find( "Arrow" );
+					Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
 
-				}
+					GameObject arrowTempParent;
 
-				float angle = -Mathf.Atan2( delta.z, delta.x ) * Mathf.Rad2Deg + 270;
-				arrowTempParent.transform.rotation = Quaternion.Euler( arrowTempParent.transform.rotation.x, angle, arrowTempParent.transform.rotation.z );
+					if( GameObject.Find( "Arrow" ) == null ) {
 
-				if( Input.GetMouseButtonUp( 1 ) ) {
+						arrowTempParent = new GameObject( "Arrow" );
+						arrowTempParent.transform.position = mSelectedTile.transform.position;
+						GameObject arrowTemp = Instantiate( Arrow ) as GameObject;
+						arrowTemp.transform.parent = arrowTempParent.transform;
+						arrowTemp.transform.localPosition = new Vector3( 0, 0.75f, 1.15f );
 
-					foreach( string move in StateManager.GetParameters() ) {
+					} else {
 
-						if( move == "move_footman" ) {
+						arrowTempParent = GameObject.Find( "Arrow" );
 
-							mSelectedTile.GetComponent<Tile>().RemoveFootman();
-							mHoverTile.GetComponent<Tile>().AddFootman( 1 );
+					}
+
+					float angle = -Mathf.Atan2( delta.z, delta.x ) * Mathf.Rad2Deg + 270;
+					arrowTempParent.transform.rotation = Quaternion.Euler( arrowTempParent.transform.rotation.x, angle, arrowTempParent.transform.rotation.z );
+
+					if( mHoverTile.GetComponent<Tile>().GetUnits().Count > 0 && mHoverTile.GetComponent<Tile>().GetUnits()[ 0 ].GetUnitOwner() == 2 ) {
+
+						Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+
+						//Do attack here
+						if( Input.GetMouseButtonUp( 1 ) ) {
+
+
+
+						}
+
+					} else {
+
+						Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+
+						if( Input.GetMouseButtonUp( 1 ) ) {
+
+							foreach( string move in StateManager.GetParameters() ) {
+
+								if( move == "move_footman" ) {
+
+									mSelectedTile.GetComponent<Tile>().RemoveFootman();
+									mHoverTile.GetComponent<Tile>().AddFootman( 1 );
+
+								} else if( move == "move_archer" ) {
+
+									mSelectedTile.GetComponent<Tile>().RemoveArcher();
+									mHoverTile.GetComponent<Tile>().AddArcher( 1 );
+
+								} else if( move == "move_lancer" ) {
+
+									mSelectedTile.GetComponent<Tile>().RemoveLancer();
+									mHoverTile.GetComponent<Tile>().AddLancer( 1 );
+
+								}
+
+							}
+
+							Destroy( arrowTempParent );
+							StateManager.Clear();
 
 						}
 
 					}
 
-					Destroy( arrowTempParent );
-					StateManager.Clear();
-
 				}
 
 			} else {
+
+				Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
 
 				GameObject temp = GameObject.Find( "Arrow" );
 				if( temp != null ) Destroy( temp );
@@ -273,6 +338,12 @@ public class TileManager : MonoBehaviour {
 	public GameObject GetSelectedTile() {
 
 		return mSelectedTile;
+
+	}
+
+	public Map GetMap() {
+
+		return mMap;
 
 	}
 

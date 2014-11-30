@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public enum Turn {
@@ -32,7 +33,18 @@ public class TurnManager : MonoBehaviour {
 
 			int width = ( int )mMap.Size.x;
 			int height = ( int )mMap.Size.y;
-			
+
+			for( int y = 0; y < height; y++ ) {
+
+				for( int x = 0; x < width; x++ ) {
+
+					mMap.GetMapData()[ x, y ].layer = 0;
+					GameObject.Find( "WorldCanvas" ).transform.GetChild( mMap.GetMapData()[ x, y ].GetComponent<Tile>().GetId() ).gameObject.SetActive( false );
+
+				}
+
+			}
+
 			for( int y = 0; y < height; y++ ) {
 
 				for( int x = 0; x < width; x++ ) {
