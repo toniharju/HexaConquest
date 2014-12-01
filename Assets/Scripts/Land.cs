@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Land : MonoBehaviour {
 
-	private int mGold = 1;
+	private int mGold = 10;
 	private int mGoldIncome = 1;
 
 	private TileManager mTileManager;
@@ -24,17 +24,17 @@ public class Land : MonoBehaviour {
 	void Update () {
 
 		//Get values from mechanics
-		if( mGold < 1 )
+		if( mGold < Mechanics.GetPrice( UnitType.Footman ) )
 			mTileManager.GetAddButtons()[ 0 ].GetComponent<Button>().interactable = false;
 		else
 			mTileManager.GetAddButtons()[ 0 ].GetComponent<Button>().interactable = true;
 
-		if( mGold < 2 )
+		if( mGold < Mechanics.GetPrice( UnitType.Archer ) )
 			mTileManager.GetAddButtons()[ 1 ].GetComponent<Button>().interactable = false;
 		else
 			mTileManager.GetAddButtons()[ 1 ].GetComponent<Button>().interactable = true;
 
-		if( mGold < 3 )
+		if( mGold < Mechanics.GetPrice( UnitType.Lancer ) )
 			mTileManager.GetAddButtons()[ 2 ].GetComponent<Button>().interactable = false;
 		else
 			mTileManager.GetAddButtons()[ 2 ].GetComponent<Button>().interactable = true;
@@ -43,22 +43,26 @@ public class Land : MonoBehaviour {
 
 	public void AddFootman() {
 
-		mGold -= 1;
+		mGold -= Mechanics.GetPrice( UnitType.Footman );
 
 	}
 
 	public void AddArcher() {
 
-		mGold -= 2;
+		mGold -= Mechanics.GetPrice( UnitType.Archer );
 
 	}
 
 	public void AddLancer() {
 
-		mGold -= 3;
+		mGold -= Mechanics.GetPrice( UnitType.Lancer );
 
 	}
 
 	public void AddGold( int amount ) { mGold += amount; }
+	public int GetGold() { return mGold; }
+
+	public void SetGoldIncome( int i ) { mGoldIncome = i; }
+	public int GetGoldIncome() { return mGoldIncome; }
 
 }

@@ -45,6 +45,9 @@ public class TurnManager : MonoBehaviour {
 
 			}
 
+			Land land = GameObject.Find( "TownFriendly" ).GetComponent<Land>();
+			int goldIncome = land.GetGold();
+
 			for( int y = 0; y < height; y++ ) {
 
 				for( int x = 0; x < width; x++ ) {
@@ -54,6 +57,9 @@ public class TurnManager : MonoBehaviour {
 				}
 
 			}
+
+			goldIncome = land.GetGold() - goldIncome;
+			land.SetGoldIncome( goldIncome );
 
 			StateManager.Clear();
 			

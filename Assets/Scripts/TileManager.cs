@@ -156,110 +156,114 @@ public class TileManager : MonoBehaviour {
 
             }
 
-        }
-		
-		if( StateManager.GetState() == State.Move && mSelectedTile != null && mHoverTile != null ) {
-			
-			Vector3 delta = mSelectedTile.transform.position - mHoverTile.transform.position;
-            int distance = Mathf.CeilToInt(delta.magnitude) - 1;
+			if( StateManager.GetState() == State.Move && mSelectedTile != null && mHoverTile != null ) {
 
-			if( distance == 1 ) {
+				Vector3 delta = mSelectedTile.transform.position - mHoverTile.transform.position;
+				int distance = Mathf.CeilToInt( delta.magnitude ) - 1;
 
-				if( mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 32 ) {
+				if( distance == 1 ) {
 
-					Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
+					if( mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 32 ) {
 
-					GameObject temp = GameObject.Find( "Arrow" );
-					if( temp != null ) Destroy( temp );
+						Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
 
-				} else if( !mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 16 ) {
+						GameObject temp = GameObject.Find( "Arrow" );
+						if( temp != null ) Destroy( temp );
 
-					Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
+					} else if( !mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 16 ) {
 
-					GameObject temp = GameObject.Find( "Arrow" );
-					if( temp != null ) Destroy( temp );
+						Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
 
-				} else {
-
-					Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
-
-					GameObject arrowTempParent;
-
-					if( GameObject.Find( "Arrow" ) == null ) {
-
-						arrowTempParent = new GameObject( "Arrow" );
-						arrowTempParent.transform.position = mSelectedTile.transform.position;
-						GameObject arrowTemp = Instantiate( Arrow ) as GameObject;
-						arrowTemp.transform.parent = arrowTempParent.transform;
-						arrowTemp.transform.localPosition = new Vector3( 0, 0.75f, 1.15f );
+						GameObject temp = GameObject.Find( "Arrow" );
+						if( temp != null ) Destroy( temp );
 
 					} else {
 
-						arrowTempParent = GameObject.Find( "Arrow" );
-
-					}
-
-					float angle = -Mathf.Atan2( delta.z, delta.x ) * Mathf.Rad2Deg + 270;
-					arrowTempParent.transform.rotation = Quaternion.Euler( arrowTempParent.transform.rotation.x, angle, arrowTempParent.transform.rotation.z );
-
-					if( mHoverTile.GetComponent<Tile>().GetUnits().Count > 0 && mHoverTile.GetComponent<Tile>().GetUnits()[ 0 ].GetUnitOwner() == 2 ) {
-
 						Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
 
-						//Do attack here
-						if( Input.GetMouseButtonUp( 1 ) ) {
+						GameObject arrowTempParent;
 
+						if( GameObject.Find( "Arrow" ) == null ) {
 
+							arrowTempParent = new GameObject( "Arrow" );
+							arrowTempParent.transform.position = mSelectedTile.transform.position;
+							GameObject arrowTemp = Instantiate( Arrow ) as GameObject;
+							arrowTemp.transform.parent = arrowTempParent.transform;
+							arrowTemp.transform.localPosition = new Vector3( 0, 0.75f, 1.15f );
+
+						} else {
+
+							arrowTempParent = GameObject.Find( "Arrow" );
 
 						}
 
-					} else {
+						float angle = -Mathf.Atan2( delta.z, delta.x ) * Mathf.Rad2Deg + 270;
+						arrowTempParent.transform.rotation = Quaternion.Euler( arrowTempParent.transform.rotation.x, angle, arrowTempParent.transform.rotation.z );
 
-						Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+						if( mHoverTile.GetComponent<Tile>().GetUnits().Count > 0 && mHoverTile.GetComponent<Tile>().GetUnits()[ 0 ].GetUnitOwner() == 2 ) {
 
-						if( Input.GetMouseButtonUp( 1 ) ) {
+							Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
 
-							foreach( string move in StateManager.GetParameters() ) {
+							//Do attack here
+							if( Input.GetMouseButtonUp( 1 ) ) {
 
-								if( move == "move_footman" ) {
 
-									mSelectedTile.GetComponent<Tile>().RemoveFootman();
-									mHoverTile.GetComponent<Tile>().AddFootman( 1 );
-
-								} else if( move == "move_archer" ) {
-
-									mSelectedTile.GetComponent<Tile>().RemoveArcher();
-									mHoverTile.GetComponent<Tile>().AddArcher( 1 );
-
-								} else if( move == "move_lancer" ) {
-
-									mSelectedTile.GetComponent<Tile>().RemoveLancer();
-									mHoverTile.GetComponent<Tile>().AddLancer( 1 );
-
-								}
 
 							}
 
-							Destroy( arrowTempParent );
-							StateManager.Clear();
+						} else {
+
+							Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+
+							if( Input.GetMouseButtonUp( 1 ) ) {
+
+								foreach( string move in StateManager.GetParameters() ) {
+
+									if( move == "move_footman" ) {
+
+										mSelectedTile.GetComponent<Tile>().RemoveFootman();
+										mHoverTile.GetComponent<Tile>().AddFootman( 1 );
+
+									} else if( move == "move_archer" ) {
+
+										mSelectedTile.GetComponent<Tile>().RemoveArcher();
+										mHoverTile.GetComponent<Tile>().AddArcher( 1 );
+
+									} else if( move == "move_lancer" ) {
+
+										mSelectedTile.GetComponent<Tile>().RemoveLancer();
+										mHoverTile.GetComponent<Tile>().AddLancer( 1 );
+
+									}
+
+								}
+
+								Destroy( arrowTempParent );
+								StateManager.Clear();
+
+							}
 
 						}
 
 					}
 
+				} else {
+
+					Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
+
+					GameObject temp = GameObject.Find( "Arrow" );
+					if( temp != null ) Destroy( temp );
+
 				}
-
-			} else {
-
-				Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
-
-				GameObject temp = GameObject.Find( "Arrow" );
-				if( temp != null ) Destroy( temp );
 
 			}
 
-		}
+		} else {
 
+			Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+
+		}
+		
         if( mSelectedTile != null ) {
 
 			int footmanSelectCount = 0;
@@ -272,12 +276,9 @@ public class TileManager : MonoBehaviour {
 
 			if( StateManager.GetState() == State.Move && StateManager.GetParameters().Count > 0 ) {
 
-				if( StateManager.GetParameters()[ 0 ] == "move_footman" )
-					footmanSelectCount = StateManager.GetParameters().Count;
-				else if( StateManager.GetParameters()[ 0 ] == "move_archer" )
-					archerSelectCount = StateManager.GetParameters().Count;
-				else if( StateManager.GetParameters()[ 0 ] == "move_lancer" )
-					lancerSelectCount = StateManager.GetParameters().Count;
+				footmanSelectCount = StateManager.GetParameters().FindAll( delegate( string move ) { return move == "move_footman"; } ).Count;
+				archerSelectCount = StateManager.GetParameters().FindAll( delegate( string move ) { return move == "move_archer"; } ).Count;
+				lancerSelectCount = StateManager.GetParameters().FindAll( delegate( string move ) { return move == "move_lancer"; } ).Count;
 
 			}
 
