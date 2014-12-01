@@ -15,6 +15,7 @@ public class Tile : MonoBehaviour {
 
     private bool isLand = false;
 	private bool isMine = false;
+	private bool isAILand = false;
 
 	private List<Unit> mUnits = new List<Unit>();
 	private List<Unit> mTempUnits = new List<Unit>();
@@ -48,6 +49,8 @@ public class Tile : MonoBehaviour {
 
 		if( GetComponentInChildren<Land>() != null )
 			isLand = true;
+		else if( GetComponentInChildren<AILand>() != null )
+			isAILand = true;
 		else if( transform.FindChild( "Mine" ) != null )
 			isMine = true;
 
@@ -93,7 +96,7 @@ public class Tile : MonoBehaviour {
 
 		if( mUnits.Count > 0 ) {
 
-			if( !isLand && !isMine ) {
+			if( !isLand && !isMine && !isAILand ) {
 
 				GameObject units;
 
@@ -132,12 +135,12 @@ public class Tile : MonoBehaviour {
 
 			foreach( Unit unit in mUnits ) {
 
-				if( unit.GetUnitOwner() == 1 ) {
+				if( mTurnManager.GetTurn() == Turn.Player && unit.GetUnitOwner() == 1 ) {
 
 					captureProgress -= Mechanics.GetCaptureRate( unit.GetUnitType() );
 
-				} else {
-
+				} else if( mTurnManager.GetTurn() == Turn.AI && unit.GetUnitOwner() == 2 ) {
+					
 					captureProgress += Mechanics.GetCaptureRate( unit.GetUnitType() );
 
 				}
@@ -165,6 +168,10 @@ public class Tile : MonoBehaviour {
 		if( Owner == TileOwner.Player && mTurnManager.GetTurn() == Turn.Player ) {
 
 			GameObject.Find( "TownFriendly" ).GetComponent<Land>().AddGold( GoldValue );
+
+		} else if( Owner == TileOwner.AI && mTurnManager.GetTurn() == Turn.AI ) {
+
+			GameObject.Find( "TownEnemy" ).GetComponent<AILand>().AddGold( GoldValue );
 
 		}
 
@@ -380,8 +387,10 @@ public class Tile : MonoBehaviour {
 	}
 
 	public bool IsLand() { return isLand; }
+	public bool IsAILand() { return isAILand; }
 
 	public List<Unit> GetUnits() { return mUnits; }
+	public List<Unit> GetTempUnits() { return mTempUnits; }
 	public int[] GetUnitCount() { return mUnitCount; }
 
 }

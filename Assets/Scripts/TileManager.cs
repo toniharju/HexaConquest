@@ -162,7 +162,7 @@ public class TileManager : MonoBehaviour {
 				int distance = Mathf.CeilToInt( delta.magnitude ) - 1;
 
 				if( distance == 1 ) {
-
+					
 					if( mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 32 ) {
 
 						Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );

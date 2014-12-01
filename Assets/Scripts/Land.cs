@@ -23,21 +23,30 @@ public class Land : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		//Get values from mechanics
-		if( mGold < Mechanics.GetPrice( UnitType.Footman ) )
+		if( transform.parent.GetComponent<Tile>().GetUnits().Count + transform.parent.GetComponent<Tile>().GetTempUnits().Count < 32 ) {
+
+			if( mGold < Mechanics.GetPrice( UnitType.Footman ) )
+				mTileManager.GetAddButtons()[ 0 ].GetComponent<Button>().interactable = false;
+			else
+				mTileManager.GetAddButtons()[ 0 ].GetComponent<Button>().interactable = true;
+
+			if( mGold < Mechanics.GetPrice( UnitType.Archer ) )
+				mTileManager.GetAddButtons()[ 1 ].GetComponent<Button>().interactable = false;
+			else
+				mTileManager.GetAddButtons()[ 1 ].GetComponent<Button>().interactable = true;
+
+			if( mGold < Mechanics.GetPrice( UnitType.Lancer ) )
+				mTileManager.GetAddButtons()[ 2 ].GetComponent<Button>().interactable = false;
+			else
+				mTileManager.GetAddButtons()[ 2 ].GetComponent<Button>().interactable = true;
+
+		} else {
+
 			mTileManager.GetAddButtons()[ 0 ].GetComponent<Button>().interactable = false;
-		else
-			mTileManager.GetAddButtons()[ 0 ].GetComponent<Button>().interactable = true;
-
-		if( mGold < Mechanics.GetPrice( UnitType.Archer ) )
 			mTileManager.GetAddButtons()[ 1 ].GetComponent<Button>().interactable = false;
-		else
-			mTileManager.GetAddButtons()[ 1 ].GetComponent<Button>().interactable = true;
-
-		if( mGold < Mechanics.GetPrice( UnitType.Lancer ) )
 			mTileManager.GetAddButtons()[ 2 ].GetComponent<Button>().interactable = false;
-		else
-			mTileManager.GetAddButtons()[ 2 ].GetComponent<Button>().interactable = true;
+
+		}
 
 	}
 

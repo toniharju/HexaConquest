@@ -65,7 +65,23 @@ public class TurnManager : MonoBehaviour {
 			
 			mTurn = Turn.AI;
 
-		} else {
+			AILand ailand = GameObject.Find( "TownEnemy" ).GetComponent<AILand>();
+			goldIncome = land.GetGold();
+
+			for( int y = 0; y < height; y++ ) {
+
+				for( int x = 0; x < width; x++ ) {
+
+					mMap.GetMapData()[ x, y ].GetComponent<Tile>().OnTurn();
+
+				}
+
+			}
+
+			goldIncome = ailand.GetGold() - goldIncome;
+			ailand.SetGoldIncome( goldIncome );
+
+			GameObject.Find( "Managers" ).GetComponent<AIManager>().OnTurn();
 
 			mTurn = Turn.Player;
 
