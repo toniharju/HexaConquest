@@ -22,7 +22,7 @@ public class Waypoint : MonoBehaviour {
 
 		int count = Next.GetComponent<Tile>().GetUnits().Count;
 
-		if( Next.GetComponent<Tile>().IsAILand() && count < 32 && footmen + archers + lancers + count < 33 ) {
+		if( Next.GetComponent<Tile>().IsAILand() && count < 32 && footmen + archers + lancers + count < 33 && transform.parent.GetComponent<Tile>().GetUnits().Count >= footmen + archers + lancers ) {
 
 			for( int i = 0; i < footmen; i++ ) { Next.GetComponent<Tile>().AddFootman( 2 ); transform.parent.GetComponent<Tile>().RemoveFootman(); }
 			for( int i = 0; i < archers; i++ ) { Next.GetComponent<Tile>().AddArcher( 2 ); transform.parent.GetComponent<Tile>().RemoveArcher(); }
@@ -30,7 +30,7 @@ public class Waypoint : MonoBehaviour {
 
 			return true;
 
-		} else if( !Next.GetComponent<Tile>().IsAILand() && count < 16 && footmen + archers + lancers + count < 17 ) {
+		} else if( !Next.GetComponent<Tile>().IsAILand() && count < 16 && footmen + archers + lancers + count < 17 && transform.parent.GetComponent<Tile>().GetUnits().Count >= footmen + archers + lancers ) {
 			
 			for( int i = 0; i < footmen; i++ ) { Next.GetComponent<Tile>().AddFootman( 2 ); transform.parent.GetComponent<Tile>().RemoveFootman(); }
 			for( int i = 0; i < archers; i++ ) { Next.GetComponent<Tile>().AddArcher( 2 ); transform.parent.GetComponent<Tile>().RemoveArcher(); }
@@ -52,7 +52,7 @@ public class Waypoint : MonoBehaviour {
 
 		int count = Previous.GetComponent<Tile>().GetUnits().Count;
 
-		if( Previous.GetComponent<Tile>().IsAILand() && count < 32 && footmen + archers + lancers + count < 33 ) {
+		if( Previous.GetComponent<Tile>().IsAILand() && count < 32 && footmen + archers + lancers + count < 33 && transform.parent.GetComponent<Tile>().GetUnits().Count >= footmen + archers + lancers ) {
 
 			for( int i = 0; i < footmen; i++ ) { Previous.GetComponent<Tile>().AddFootman( 2 ); transform.parent.GetComponent<Tile>().RemoveFootman(); }
 			for( int i = 0; i < archers; i++ ) { Previous.GetComponent<Tile>().AddArcher( 2 ); transform.parent.GetComponent<Tile>().RemoveArcher(); }
@@ -60,7 +60,7 @@ public class Waypoint : MonoBehaviour {
 
 			return true;
 
-		} else if( !Previous.GetComponent<Tile>().IsAILand() && count < 16 && footmen + archers + lancers + count < 17 ) {
+		} else if( !Previous.GetComponent<Tile>().IsAILand() && count < 16 && footmen + archers + lancers + count < 17 && transform.parent.GetComponent<Tile>().GetUnits().Count >= footmen + archers + lancers ) {
 
 			for( int i = 0; i < footmen; i++ ) { Previous.GetComponent<Tile>().AddFootman( 2 ); GetComponent<Tile>().RemoveFootman(); }
 			for( int i = 0; i < archers; i++ ) { Previous.GetComponent<Tile>().AddArcher( 2 ); GetComponent<Tile>().RemoveArcher(); }
@@ -75,5 +75,8 @@ public class Waypoint : MonoBehaviour {
 		}
 
 	}
+
+	public GameObject GetNext() { return Next; }
+	public GameObject GetPrevious() { return Previous; }
 
 }
