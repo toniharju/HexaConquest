@@ -10,6 +10,7 @@ public class TileManager : MonoBehaviour {
 	private GameObject mCastlePanel;
 	private GameObject mTilePanel;
 	private GameObject mGameOverPanel;
+	private GameObject mGameDonePanel;
 	private GameObject mMenuPanel;
 
     private GameObject[] mAddButton = new GameObject[ 3 ];
@@ -22,6 +23,7 @@ public class TileManager : MonoBehaviour {
 	private GameObject mSelectedTile;
 
 	private bool mGameOver = false;
+	private bool mGameFinished = false;
 
 	public GameObject Arrow;
 
@@ -37,6 +39,7 @@ public class TileManager : MonoBehaviour {
 		mCastlePanel = GameObject.Find( "CastlePanel" );
 		mTilePanel = GameObject.Find( "TilePanel" );
 		mGameOverPanel = GameObject.Find( "GameOverPanel" );
+		mGameDonePanel = GameObject.Find( "GameDonePanel" );
 		mMenuPanel = GameObject.Find( "MenuPanel" );
 
 		mMoveButton[ 0 ] = GameObject.Find( "MoveFootman" );
@@ -62,6 +65,7 @@ public class TileManager : MonoBehaviour {
 		mCastlePanel.SetActive( false );
 		mTilePanel.SetActive( false );
 		mGameOverPanel.SetActive( false );
+		mGameDonePanel.SetActive( false );
 		mMenuPanel.SetActive( false );
 
 		mMap = GameObject.Find( "MapData" ).GetComponent<Map>();
@@ -74,6 +78,20 @@ public class TileManager : MonoBehaviour {
 		if( mGameOver ) {
 
 			mGameOverPanel.SetActive( true );
+			mCastlePanel.SetActive( false );
+			mTilePanel.SetActive( false );
+
+			if( Input.GetKeyDown( KeyCode.Escape ) ) {
+
+				Application.LoadLevel( 0 );
+
+			}
+
+			return;
+
+		} else if( mGameFinished ) {
+
+			mGameDonePanel.SetActive( true );
 			mCastlePanel.SetActive( false );
 			mTilePanel.SetActive( false );
 
@@ -132,10 +150,9 @@ public class TileManager : MonoBehaviour {
 						}
 
                         mSelectedTile = hit.collider.gameObject;
+						StateManager.Clear();
 
 						if( mSelectedTile.layer == 8 ) {
-
-							StateManager.Clear();
 
 							if( mSelectedTile.transform.FindChild( "TownFriendly" ) != null ) {
 
@@ -174,6 +191,21 @@ public class TileManager : MonoBehaviour {
 								mMoveButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveLancer() );
 
 							}
+
+						} else {
+
+							mTilePanel.SetActive( false );
+							mCastlePanel.SetActive( false );
+
+							mAddButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mAddButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mAddButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mDeployButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mDeployButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mDeployButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mMoveButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mMoveButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
+							mMoveButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
 
 						}
 
@@ -402,9 +434,9 @@ public class TileManager : MonoBehaviour {
 			int archerSelectCount = 0;
 			int lancerSelectCount = 0;
 
-			int footmanCount = mSelectedTile.GetComponent<Tile>().GetUnitCount()[ ( int )UnitType.Footman ];
-			int archerCount = mSelectedTile.GetComponent<Tile>().GetUnitCount()[ ( int )UnitType.Archer ];
-			int lancerCount = mSelectedTile.GetComponent<Tile>().GetUnitCount()[ ( int )UnitType.Lancer ];
+			int footmanCount = mSelectedTile.GetComponent<Tile>().GetUnits().FindAll( delegate( Unit unit ) { return ( unit.GetUnitOwner() == 1 && unit.GetUnitType() == UnitType.Footman ); } ).Count;
+			int archerCount = mSelectedTile.GetComponent<Tile>().GetUnits().FindAll( delegate( Unit unit ) { return ( unit.GetUnitOwner() == 1 && unit.GetUnitType() == UnitType.Archer ); } ).Count;
+			int lancerCount = mSelectedTile.GetComponent<Tile>().GetUnits().FindAll( delegate( Unit unit ) { return ( unit.GetUnitOwner() == 1 && unit.GetUnitType() == UnitType.Lancer ); } ).Count;
 
 			int owner = 1;
 			bool isDisabled = mSelectedTile.GetComponent<Tile>().IsDisabled();
@@ -510,6 +542,9 @@ public class TileManager : MonoBehaviour {
 
 	public void SetGameOver( bool set ) { mGameOver = set; }
 	public bool GetGameOver() { return mGameOver; }
+
+	public void SetGameFinished( bool set ) { mGameFinished = set; }
+	public bool GetGameFinished() { return mGameFinished; }
 
 	public GameObject[] GetAddButtons() { return mAddButton; }
 	public GameObject[] GetDeployButtons() { return mDeployButton; }

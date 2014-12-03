@@ -33,11 +33,10 @@ public class TurnManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if( mTileManager.GetGameOver() ) return;
+		if( mTileManager.GetGameOver() || mTileManager.GetGameFinished() ) return;
 
 		if( mTurn == Turn.Player && Input.GetKeyUp( KeyCode.Space ) ) {
 
-			mTurns++;
 			UpdateTurn();
 
 		}
@@ -47,6 +46,8 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void UpdateTurn() {
+
+		mTurns++;
 
 		mTurn = Turn.Player;
 

@@ -370,6 +370,10 @@ public class Tile : MonoBehaviour {
 
 			mTileManager.SetGameOver( true );
 
+		} else if( isAILand && Owner == TileOwner.Player ) {
+
+			mTileManager.SetGameFinished( true );
+
 		}
 
 	}
