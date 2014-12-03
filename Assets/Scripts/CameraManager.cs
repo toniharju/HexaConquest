@@ -21,6 +21,15 @@ public class CameraManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		float horizontal = -Input.GetAxis( "Horizontal" );
+		float vertical = -Input.GetAxis( "Vertical" );
+
+		if( horizontal != 0 || vertical != 0 ) {
+
+			Camera.main.transform.localPosition = Camera.main.transform.localPosition + Quaternion.Euler( 0, -45, 0 ) * ( new Vector3( Velocity.x * horizontal * Time.deltaTime, 0, Velocity.y * vertical * Time.deltaTime ) );
+
+		}
+
         if( Input.GetMouseButton( 2 ) ) {
             
             float dx = Input.GetAxisRaw( "Mouse X" );
