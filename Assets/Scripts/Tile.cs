@@ -138,6 +138,11 @@ public class Tile : MonoBehaviour {
 
 			if( !isLand && !isMine && !isAILand ) {
 
+				if( transform.FindChild( "EmblemGreen" ) != null )
+					Destroy( transform.FindChild( "EmblemGreen" ).gameObject );
+				else if( transform.FindChild( "EmblemRed" ) != null )
+					Destroy( transform.FindChild( "EmblemRed" ).gameObject );
+
 				GameObject units;
 
 				if( transform.FindChild( "Units" ) != null ) {
@@ -181,6 +186,32 @@ public class Tile : MonoBehaviour {
 
 				if( transform.FindChild( "Units" ) != null ) Destroy( transform.FindChild( "Units" ).gameObject );
 
+				if( mUnits[ 0 ].GetUnitOwner() == 1 ) {
+
+					if( transform.FindChild( "EmblemGreen" ) == null ) {
+
+						GameObject emblem = Instantiate( Resources.Load<Object>( "Prefabs/EmblemGreen" ), new Vector3( transform.position.x, 1.5f, transform.position.z ), Quaternion.identity ) as GameObject;
+						emblem.name = "EmblemGreen";
+						emblem.transform.parent = transform;
+						emblem.transform.localRotation = Quaternion.Euler( -43, 110, 75 );
+						emblem.transform.localScale = new Vector3( 0.004f, 0.004f, 1 );
+
+					}
+
+				} else {
+
+					if( transform.FindChild( "EmblemRed" ) == null ) {
+
+						GameObject emblem = Instantiate( Resources.Load<Object>( "Prefabs/EmblemRed" ), new Vector3( transform.position.x, 1.5f, transform.position.z ), Quaternion.identity ) as GameObject;
+						emblem.name = "EmblemRed";
+						emblem.transform.parent = transform;
+						emblem.transform.localRotation = Quaternion.Euler( -43, 110, 75 );
+						emblem.transform.localScale = new Vector3( 0.004f, 0.004f, 1 );
+
+					}
+
+				}
+
 			}
 
 			if( capture ) {
@@ -204,6 +235,10 @@ public class Tile : MonoBehaviour {
 		} else {
 
 			if( transform.FindChild( "Units" ) != null ) Destroy( transform.FindChild( "Units" ).gameObject );
+			if( transform.FindChild( "EmblemGreen" ) != null )
+				Destroy( transform.FindChild( "EmblemGreen" ).gameObject );
+			else if( transform.FindChild( "EmblemRed" ) != null )
+				Destroy( transform.FindChild( "EmblemRed" ).gameObject );
 
 		}
 

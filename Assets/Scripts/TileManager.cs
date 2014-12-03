@@ -21,6 +21,7 @@ public class TileManager : MonoBehaviour {
 	public GameObject Arrow;
 
 	public Texture2D MainCursor;
+	public Texture2D AttackCursor;
 	public Texture2D CrossCursor;
 
 	// Use this for initialization
@@ -202,10 +203,12 @@ public class TileManager : MonoBehaviour {
 
 						if( mHoverTile.GetComponent<Tile>().GetUnits().Count > 0 && mHoverTile.GetComponent<Tile>().GetUnits()[ 0 ].GetUnitOwner() == 2 ) {
 
-							Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+							Cursor.SetCursor( AttackCursor, Vector2.zero, CursorMode.Auto );
 
 							//Do attack here
 							if( Input.GetMouseButtonUp( 1 ) ) {
+
+								Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
 
 								int enemyCount = mHoverTile.GetComponent<Tile>().GetUnits().Count;
 								int friendlyCount = mSelectedTile.GetComponent<Tile>().GetUnits().Count;

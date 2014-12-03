@@ -8513,7 +8513,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: d7e55bf2017156642960ed3ea424f6fd, type: 2}
       propertyPath: m_TagString
-      value: Impassable
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: d7e55bf2017156642960ed3ea424f6fd, type: 2}
       propertyPath: m_LightmapIndex
@@ -13063,7 +13063,7 @@ GameObject:
   - 64: {fileID: 629268935}
   m_Layer: 0
   m_Name: HexagonGrass
-  m_TagString: Impassable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -13176,7 +13176,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e51914d3abed631428d9a6da44122a8c, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: e51914d3abed631428d9a6da44122a8c, type: 2}
       propertyPath: Previous
@@ -33737,6 +33737,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Arrow: {fileID: 100000, guid: 60676950e743ab04cbd96c99fb8366ce, type: 2}
   MainCursor: {fileID: 2800000, guid: 8737c539d1e8ce6469e6052d2d61064d, type: 3}
+  AttackCursor: {fileID: 2800000, guid: 07c3c14729478be42935bb2a35666484, type: 3}
   CrossCursor: {fileID: 2800000, guid: 372d95c4e9c7d944b857265b459433a2, type: 3}
 --- !u!114 &1594830385
 MonoBehaviour:
@@ -33926,7 +33927,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e51914d3abed631428d9a6da44122a8c, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: e51914d3abed631428d9a6da44122a8c, type: 2}
       propertyPath: Previous
@@ -35419,7 +35420,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e51914d3abed631428d9a6da44122a8c, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: e51914d3abed631428d9a6da44122a8c, type: 2}
       propertyPath: Previous
