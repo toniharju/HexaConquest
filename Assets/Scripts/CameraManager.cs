@@ -57,8 +57,6 @@ public class CameraManager : MonoBehaviour {
 
 		Camera.main.transform.localPosition = pos;
 
-		Debug.Log( pos );
-
 	}
 
 }
