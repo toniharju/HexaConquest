@@ -48,6 +48,17 @@ public class CameraManager : MonoBehaviour {
 
         }
 
+		Vector3 pos = Camera.main.transform.localPosition;
+
+		if( pos.z < 4 ) pos.z = 4;
+		if( pos.x > -4 ) pos.x = -4;
+		if( pos.z > 20 ) pos.z = 20;
+		if( pos.x < -15 ) pos.x = -15;
+
+		Camera.main.transform.localPosition = pos;
+
+		Debug.Log( pos );
+
 	}
 
 }
