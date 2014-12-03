@@ -112,13 +112,17 @@ public class Tile : MonoBehaviour {
 
 		}
 
-		if( mTileManager.GetSelectedTile() == gameObject ) {
+		if( gameObject.layer == 8 ) {
 
-			renderer.material.color = mColors[ 3 ];
+			if( mTileManager.GetSelectedTile() == gameObject ) {
 
-		} else {
+				renderer.material.color = mColors[ 3 ];
 
-			renderer.material.color = mColors[ ( int )Owner ];
+			} else {
+
+				renderer.material.color = mColors[ ( int )Owner ];
+
+			}
 
 		}
 
@@ -132,81 +136,85 @@ public class Tile : MonoBehaviour {
 
 	}
 
-	public void UpdateUnits( bool capture = true ) {
+	public void UpdateUnits() {
 
 		if( mUnits.Count > 0 ) {
 
-			if( !isLand && !isMine && !isAILand ) {
+			if( gameObject.layer == 8 ) {
 
-				if( transform.FindChild( "EmblemGreen" ) != null )
-					Destroy( transform.FindChild( "EmblemGreen" ).gameObject );
-				else if( transform.FindChild( "EmblemRed" ) != null )
-					Destroy( transform.FindChild( "EmblemRed" ).gameObject );
+				if( !isLand && !isMine && !isAILand ) {
 
-				GameObject units;
+					if( transform.FindChild( "EmblemGreen" ) != null )
+						Destroy( transform.FindChild( "EmblemGreen" ).gameObject );
+					else if( transform.FindChild( "EmblemRed" ) != null )
+						Destroy( transform.FindChild( "EmblemRed" ).gameObject );
 
-				if( transform.FindChild( "Units" ) != null ) {
+					GameObject units;
 
-					units = transform.FindChild( "Units" ).gameObject;
+					if( transform.FindChild( "Units" ) != null ) {
 
-				} else {
+						units = transform.FindChild( "Units" ).gameObject;
 
-					units = Instantiate( Resources.Load<Object>( "Prefabs/Units" ) ) as GameObject;
-					units.name = "Units";
-					units.transform.parent = transform;
-					units.transform.localPosition = Vector3.zero;
+					} else {
 
-				}
-
-				if( mUnits.Count > 11 ) {
-
-					units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit9" );
-
-				} else if( mUnits.Count > 5 ) {
-
-					units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit6" );
-
-				} else {
-
-					units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit3" );
-
-				}
-
-				Material[] changed = new Material[ 4 ];
-				changed = units.renderer.materials;
-
-				if( mUnits[ 0 ].GetUnitOwner() == 1 )
-					changed[ 1 ] = Resources.Load<Material>( "Materials/ShieldFrontGreen" );
-				else
-					changed[ 1 ] = Resources.Load<Material>( "Materials/ShieldFrontRed" );
-
-				units.renderer.materials = changed;
-
-			} else {
-
-				if( transform.FindChild( "Units" ) != null ) Destroy( transform.FindChild( "Units" ).gameObject );
-
-				if( mUnits[ 0 ].GetUnitOwner() == 1 ) {
-
-					if( transform.FindChild( "EmblemGreen" ) == null ) {
-
-						GameObject emblem = Instantiate( Resources.Load<Object>( "Prefabs/EmblemGreen" ), new Vector3( transform.position.x, 1.5f, transform.position.z ), Quaternion.identity ) as GameObject;
-						emblem.name = "EmblemGreen";
-						emblem.transform.parent = transform;
-						emblem.transform.localRotation = Quaternion.Euler( -43, 110, 75 );
-						emblem.transform.localScale = new Vector3( 0.004f, 0.004f, 1 );
+						units = Instantiate( Resources.Load<Object>( "Prefabs/Units" ) ) as GameObject;
+						units.name = "Units";
+						units.transform.parent = transform;
+						units.transform.localPosition = Vector3.zero;
 
 					}
 
+					if( mUnits.Count > 11 ) {
+
+						units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit9" );
+
+					} else if( mUnits.Count > 5 ) {
+
+						units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit6" );
+
+					} else {
+
+						units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit3" );
+
+					}
+
+					Material[] changed = new Material[ 4 ];
+					changed = units.renderer.materials;
+
+					if( mUnits[ 0 ].GetUnitOwner() == 1 )
+						changed[ 1 ] = Resources.Load<Material>( "Materials/ShieldFrontGreen" );
+					else
+						changed[ 1 ] = Resources.Load<Material>( "Materials/ShieldFrontRed" );
+
+					units.renderer.materials = changed;
+
 				} else {
 
-					if( transform.FindChild( "EmblemRed" ) == null ) {
+					if( transform.FindChild( "Units" ) != null ) Destroy( transform.FindChild( "Units" ).gameObject );
 
-						GameObject emblem = Instantiate( Resources.Load<Object>( "Prefabs/EmblemRed" ), new Vector3( transform.position.x, 1.5f, transform.position.z ), Quaternion.identity ) as GameObject;
-						emblem.name = "EmblemRed";
-						emblem.transform.parent = transform;
-						emblem.transform.localRotation = Quaternion.Euler( -43, 110, 75 );
-						emblem.transform.localScale = new Vector3( 0.004f, 0.004f, 1 );
+					if( mUnits[ 0 ].GetUnitOwner() == 1 ) {
+
+						if( transform.FindChild( "EmblemGreen" ) == null ) {
+
+							GameObject emblem = Instantiate( Resources.Load<Object>( "Prefabs/EmblemGreen" ), new Vector3( transform.position.x, 1.5f, transform.position.z ), Quaternion.identity ) as GameObject;
+							emblem.name = "EmblemGreen";
+							emblem.transform.parent = transform;
+							emblem.transform.localRotation = Quaternion.Euler( -43, 110, 75 );
+							emblem.transform.localScale = new Vector3( 0.004f, 0.004f, 1 );
+
+						}
+
+					} else {
+
+						if( transform.FindChild( "EmblemRed" ) == null ) {
+
+							GameObject emblem = Instantiate( Resources.Load<Object>( "Prefabs/EmblemRed" ), new Vector3( transform.position.x, 1.5f, transform.position.z ), Quaternion.identity ) as GameObject;
+							emblem.name = "EmblemRed";
+							emblem.transform.parent = transform;
+							emblem.transform.localRotation = Quaternion.Euler( -43, 110, 75 );
+							emblem.transform.localScale = new Vector3( 0.004f, 0.004f, 1 );
+
+						}
 
 					}
 
@@ -214,19 +222,15 @@ public class Tile : MonoBehaviour {
 
 			}
 
-			if( capture ) {
+			foreach( Unit unit in mUnits ) {
 
-				foreach( Unit unit in mUnits ) {
+				if( mTurnManager.GetTurn() == Turn.Player && unit.GetUnitOwner() == 1 ) {
 
-					if( mTurnManager.GetTurn() == Turn.Player && unit.GetUnitOwner() == 1 ) {
+					captureProgress -= Mechanics.GetCaptureRate( unit.GetUnitType() );
 
-						captureProgress -= Mechanics.GetCaptureRate( unit.GetUnitType() );
+				} else if( mTurnManager.GetTurn() == Turn.AI && unit.GetUnitOwner() == 2 ) {
 
-					} else if( mTurnManager.GetTurn() == Turn.AI && unit.GetUnitOwner() == 2 ) {
-
-						captureProgress += Mechanics.GetCaptureRate( unit.GetUnitType() );
-
-					}
+					captureProgress += Mechanics.GetCaptureRate( unit.GetUnitType() );
 
 				}
 
@@ -359,6 +363,12 @@ public class Tile : MonoBehaviour {
 				}
 
 			}
+
+		}
+
+		if( isLand && Owner == TileOwner.AI ) {
+
+			mTileManager.SetGameOver( true );
 
 		}
 

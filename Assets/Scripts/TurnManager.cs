@@ -11,9 +11,11 @@ public enum Turn {
 
 public class TurnManager : MonoBehaviour {
 
+	private int mTurns = 1;
 	private Turn mTurn = Turn.Player;
 
 	private Map mMap;
+	private TileManager mTileManager;
 
 	// Use this for initialization
 	void Start () {
@@ -24,16 +26,23 @@ public class TurnManager : MonoBehaviour {
 
 		}
 
+		if( GameObject.Find( "Managers" ) ) mTileManager = GameObject.Find( "Managers" ).GetComponent<TileManager>();
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
+		if( mTileManager.GetGameOver() ) return;
+
 		if( mTurn == Turn.Player && Input.GetKeyUp( KeyCode.Space ) ) {
-			
+
+			mTurns++;
 			UpdateTurn();
 
 		}
+
+		mTileManager.GetTurnText()[ 2 ].GetComponent<Text>().text = "end\nturn: " + mTurns;
 
 	}
 

@@ -9,14 +9,19 @@ public class TileManager : MonoBehaviour {
 
 	private GameObject mCastlePanel;
 	private GameObject mTilePanel;
+	private GameObject mGameOverPanel;
+	private GameObject mMenuPanel;
 
     private GameObject[] mAddButton = new GameObject[ 3 ];
     private GameObject[] mDeployButton = new GameObject[ 3 ];
 	private GameObject[] mMoveButton = new GameObject[ 3 ];
 	private GameObject[] mQueueImage = new GameObject[ 3 ];
+	private GameObject[] mTurnText = new GameObject[ 3 ];
 
 	private GameObject mHoverTile;
 	private GameObject mSelectedTile;
+
+	private bool mGameOver = false;
 
 	public GameObject Arrow;
 
@@ -31,6 +36,8 @@ public class TileManager : MonoBehaviour {
 
 		mCastlePanel = GameObject.Find( "CastlePanel" );
 		mTilePanel = GameObject.Find( "TilePanel" );
+		mGameOverPanel = GameObject.Find( "GameOverPanel" );
+		mMenuPanel = GameObject.Find( "MenuPanel" );
 
 		mMoveButton[ 0 ] = GameObject.Find( "MoveFootman" );
 		mMoveButton[ 1 ] = GameObject.Find( "MoveArcher" );
@@ -48,8 +55,14 @@ public class TileManager : MonoBehaviour {
 		mQueueImage[ 1 ] = GameObject.Find( "QueueArcher" );
 		mQueueImage[ 2 ] = GameObject.Find( "QueueLancer" );
 
+		mTurnText[ 0 ] = GameObject.Find( "GoldPerTurn" );
+		mTurnText[ 1 ] = GameObject.Find( "GoldTotal" );
+		mTurnText[ 2 ] = GameObject.Find( "EndTurnText" );
+
 		mCastlePanel.SetActive( false );
 		mTilePanel.SetActive( false );
+		mGameOverPanel.SetActive( false );
+		mMenuPanel.SetActive( false );
 
 		mMap = GameObject.Find( "MapData" ).GetComponent<Map>();
 
@@ -58,18 +71,42 @@ public class TileManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if( Input.GetKeyDown( KeyCode.Escape ) ) {
+		if( mGameOver ) {
 
-			Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
-
-			mSelectedTile = null;
+			mGameOverPanel.SetActive( true );
 			mCastlePanel.SetActive( false );
 			mTilePanel.SetActive( false );
-			StateManager.Clear();
 
-			if( GameObject.Find( "Arrow" ) != null ) {
+			if( Input.GetKeyDown( KeyCode.Escape ) ) {
 
-				Destroy( GameObject.Find( "Arrow" ) );
+				Application.LoadLevel( 0 );
+
+			}
+
+			return;
+
+		}
+
+		if( Input.GetKeyDown( KeyCode.Escape ) ) {
+
+			if( mSelectedTile == null ) {
+
+				mMenuPanel.SetActive( true );
+
+			} else {
+
+				Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+
+				mSelectedTile = null;
+				mCastlePanel.SetActive( false );
+				mTilePanel.SetActive( false );
+				StateManager.Clear();
+
+				if( GameObject.Find( "Arrow" ) != null ) {
+
+					Destroy( GameObject.Find( "Arrow" ) );
+
+				}
 
 			}
 
@@ -95,43 +132,48 @@ public class TileManager : MonoBehaviour {
 						}
 
                         mSelectedTile = hit.collider.gameObject;
-						StateManager.Clear();
 
-						if( mSelectedTile.transform.FindChild( "TownFriendly" ) != null ) {
+						if( mSelectedTile.layer == 8 ) {
 
-							GameObject land = mSelectedTile.transform.FindChild( "TownFriendly" ).gameObject;
+							StateManager.Clear();
 
-							mCastlePanel.SetActive( true );
-							mTilePanel.SetActive( false );
+							if( mSelectedTile.transform.FindChild( "TownFriendly" ) != null ) {
 
-							mAddButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mAddButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mAddButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mAddButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().AddFootman( 1 ) );
-							mAddButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => land.GetComponent<Land>().AddFootman() );
-                            mAddButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().AddArcher( 1 ) );
-							mAddButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => land.GetComponent<Land>().AddArcher() );
-                            mAddButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().AddLancer( 1 ) );
-							mAddButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => land.GetComponent<Land>().AddLancer() );
+								GameObject land = mSelectedTile.transform.FindChild( "TownFriendly" ).gameObject;
 
-							mDeployButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mDeployButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mDeployButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
-                            mDeployButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveFootman() );
-                            mDeployButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveArcher() );
-                            mDeployButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveLancer() );
+								mCastlePanel.SetActive( true );
+								mTilePanel.SetActive( false );
 
-						} else {
+								mAddButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mAddButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mAddButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mAddButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().AddFootman( 1 ) );
+								mAddButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => land.GetComponent<Land>().AddFootman() );
+								mAddButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().AddArcher( 1 ) );
+								mAddButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => land.GetComponent<Land>().AddArcher() );
+								mAddButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().AddLancer( 1 ) );
+								mAddButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => land.GetComponent<Land>().AddLancer() );
 
-							mCastlePanel.SetActive( false );
-							mTilePanel.SetActive( true );
+								mDeployButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mDeployButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mDeployButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mDeployButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveFootman() );
+								mDeployButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveArcher() );
+								mDeployButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveLancer() );
 
-							mMoveButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mMoveButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mMoveButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
-							mMoveButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveFootman() );
-							mMoveButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveArcher() );
-							mMoveButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveLancer() );
+							} else {
+
+								mCastlePanel.SetActive( false );
+								mTilePanel.SetActive( true );
+
+								mMoveButton[ 0 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mMoveButton[ 1 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mMoveButton[ 2 ].GetComponent<Button>().onClick.RemoveAllListeners();
+								mMoveButton[ 0 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveFootman() );
+								mMoveButton[ 1 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveArcher() );
+								mMoveButton[ 2 ].GetComponent<Button>().onClick.AddListener( () => mSelectedTile.GetComponent<Tile>().MoveLancer() );
+
+							}
 
 						}
 
@@ -163,15 +205,16 @@ public class TileManager : MonoBehaviour {
 				int distance = Mathf.CeilToInt( delta.magnitude ) - 1;
 
 				if( distance == 1 ) {
-					
-					if( mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 32 ) {
+
+					int unitCount = mHoverTile.GetComponent<Tile>().GetUnits().FindAll( delegate( Unit unit ) { return unit.GetUnitOwner() == 1; } ).Count;
+					if( mHoverTile.GetComponent<Tile>().IsLand() && unitCount + StateManager.GetParameters().Count > 32 ) {
 
 						Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
 
 						GameObject temp = GameObject.Find( "Arrow" );
 						if( temp != null ) Destroy( temp );
 
-					} else if( !mHoverTile.GetComponent<Tile>().IsLand() && mHoverTile.GetComponent<Tile>().GetUnits().Count + StateManager.GetParameters().Count > 16 ) {
+					} else if( !mHoverTile.GetComponent<Tile>().IsLand() && unitCount + StateManager.GetParameters().Count > 16 ) {
 
 						Cursor.SetCursor( CrossCursor, Vector2.zero, CursorMode.Auto );
 
@@ -275,6 +318,29 @@ public class TileManager : MonoBehaviour {
 
 							}
 
+						} else if( mHoverTile.GetComponent<Tile>().IsAILand() ) {
+
+							Cursor.SetCursor( AttackCursor, Vector2.zero, CursorMode.Auto );
+
+							if( Input.GetMouseButtonUp( 1 ) ) {
+
+								Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
+
+								int friendlyCount = mSelectedTile.GetComponent<Tile>().GetUnits().Count;
+
+								for( int i = 0; i < friendlyCount; i++ ) {
+
+									mHoverTile.GetComponent<Tile>().AddToCapture( -Mechanics.GetCaptureRate( mSelectedTile.GetComponent<Tile>().GetUnits()[ i ].GetUnitType() ) );
+
+								}
+
+								mSelectedTile.GetComponent<Tile>().Disable();
+
+								Destroy( arrowTempParent );
+								StateManager.Clear();
+
+							}
+
 						} else {
 
 							Cursor.SetCursor( MainCursor, Vector2.zero, CursorMode.Auto );
@@ -329,6 +395,8 @@ public class TileManager : MonoBehaviour {
 		}
 		
         if( mSelectedTile != null ) {
+
+			mMenuPanel.SetActive( false );
 
 			int footmanSelectCount = 0;
 			int archerSelectCount = 0;
@@ -437,9 +505,16 @@ public class TileManager : MonoBehaviour {
 
 	}
 
+	public void ExitToMainMenu() { Application.LoadLevel( 0 ); }
+	public void CloseMenuPanel() { mMenuPanel.SetActive( false ); }
+
+	public void SetGameOver( bool set ) { mGameOver = set; }
+	public bool GetGameOver() { return mGameOver; }
+
 	public GameObject[] GetAddButtons() { return mAddButton; }
 	public GameObject[] GetDeployButtons() { return mDeployButton; }
 	public GameObject[] GetMoveButtons() { return mMoveButton; }
 	public GameObject[] GetQueueImages() { return mQueueImage; }
+	public GameObject[] GetTurnText() { return mTurnText; }
 
 }

@@ -37,7 +37,7 @@ public class AIManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	public void OnTurn () {
-		
+
 		mPreviousTurn = mCurrentTurn;
 		mCurrentTurn++;
 

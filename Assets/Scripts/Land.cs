@@ -48,6 +48,9 @@ public class Land : MonoBehaviour {
 
 		}
 
+		mTileManager.GetTurnText()[ 0 ].GetComponent<Text>().text = "/turn: " + mGoldIncome;
+		mTileManager.GetTurnText()[ 1 ].GetComponent<Text>().text = "total: " + mGold;
+
 	}
 
 	public void AddFootman() {
