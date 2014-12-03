@@ -222,6 +222,23 @@ public class TileManager : MonoBehaviour {
 
 								for( int i = 0; i < friendlyCount; i++ ) {
 
+									bool allDead = false;
+
+									for( int j = enemyCount - 1; j >= 0; j-- ) {
+
+										allDead = true;
+
+										if( enemyHealth[ j ] > 0 ) {
+
+											allDead = false;
+											break;
+
+										}
+
+									}
+
+									if( allDead ) break;
+
 									int toAttack = Random.Range( 0, enemyCount );
 									int attackPower = Mechanics.GetAttackPower( mSelectedTile.GetComponent<Tile>().GetUnits()[ i ].GetUnitType() );
 									

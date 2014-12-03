@@ -206,6 +206,23 @@ public class AIManager : MonoBehaviour {
 
 											for( int k = 0; k < friendlyCount; k++ ) {
 
+												bool allDead = false;
+
+												for( int l = enemyCount - 1; l >= 0; l-- ) {
+
+													allDead = true;
+
+													if( enemyHealth[ l ] > 0 ) {
+
+														allDead = false;
+														break;
+
+													}
+
+												}
+
+												if( allDead ) break;
+
 												int toAttack = Random.Range( 0, enemyCount );
 												int attackPower = Mechanics.GetAttackPower( current.GetComponent<Tile>().GetUnits()[ k ].GetUnitType() );
 

@@ -29,6 +29,8 @@ public class Tile : MonoBehaviour {
 								new Color( 1.0f, 0, 0 ),		//AI
 								new Color( 0, 0.7f, 0.8f ) };	//Selected
 
+	private GameObject[] mNeighbour = new GameObject[6];
+
 	private int captureProgress = 0;
 	private int mId;
 	private Vector2 mPosition = Vector2.zero;
@@ -36,6 +38,7 @@ public class Tile : MonoBehaviour {
 	private TurnManager mTurnManager;
 
 	private bool mIsDisabled = false;
+	private bool mHasRunOnce = false;
 
     public int GoldValue = 1;
     public TileOwner Owner;
@@ -64,6 +67,50 @@ public class Tile : MonoBehaviour {
 	}
 
 	void Update() {
+
+		if( !mHasRunOnce ) {
+
+			int i = 0;
+			for( int dy = -1; dy < 2; dy++ ) {
+
+				for( int dx = -1; dx < 2; dx++ ) {
+
+					int x = ( int )mPosition.x + dx;
+					int y = ( int )mPosition.y + dy;
+
+					if( dx != 0 ) {
+						if( x % 2 == 1 ) {
+							if( dy == 1 ) continue;
+						} else {
+							if( dy == -1 ) continue;
+						}
+					}
+
+					if( x > -1 && x < mTileManager.GetMap().Size.x && y > -1 && y < mTileManager.GetMap().Size.y ) {
+
+						if( mTileManager.GetMap().GetMapData()[ x, y ] == gameObject ) continue;
+
+						if( mTileManager.GetMap().GetMapData()[ x, y ] == null || !mTileManager.GetMap().GetMapData()[ x, y ].activeSelf ) {
+
+							mNeighbour[ i ] = null;
+
+						} else {
+							
+							mNeighbour[ i ] = mTileManager.GetMap().GetMapData()[ x, y ];
+
+						}
+
+					}
+
+					i++;
+
+				}
+
+			}
+
+			mHasRunOnce = true;
+
+		}
 
 		if( mTileManager.GetSelectedTile() == gameObject ) {
 
@@ -119,6 +166,11 @@ public class Tile : MonoBehaviour {
 					units.GetComponent<MeshFilter>().mesh = Resources.Load<Mesh>( "Models/Unit3" );
 
 				}
+
+				if( mUnits[ 0 ].GetUnitOwner() == 1 )
+					units.renderer.materials[ 2 ] = Resources.Load<Material>( "Materials/ShieldFrontGreen" );
+				else
+					units.renderer.materials[ 2 ] = Resources.Load<Material>( "Materials/ShieldFrontRed" );
 
 			} else {
 
@@ -185,7 +237,37 @@ public class Tile : MonoBehaviour {
 			}
 
 		}
-		
+
+		if( ( Owner == TileOwner.Player ) ||
+			( mUnits.Count > 0 && mUnits[ 0 ].GetUnitOwner() == 1 ) ) {
+
+			GameObject canvas = GameObject.Find( "WorldCanvas" );
+
+			gameObject.layer = 8;
+			for( int i = 0; i < 6; i++ ) {
+
+				if( mNeighbour[ i ] == null ) continue;
+
+				mNeighbour[ i ].layer = 8;
+
+				int id = mNeighbour[ i ].GetComponent<Tile>().GetId();
+				int childCount = mNeighbour[ i ].transform.childCount;
+				string childName = "";
+				TileOwner owner = mNeighbour[ i ].GetComponent<Tile>().GetOwner();
+
+				if( childCount > 0 ) childName = mNeighbour[ i ].transform.GetChild( 0 ).name;
+
+				if( mNeighbour[ i ] != null && owner != TileOwner.Player ) {
+
+					if( childCount == 0 || childCount > 0 && childName != "Tree" )
+						canvas.transform.GetChild( id ).gameObject.SetActive( true );
+
+				}
+
+			}
+
+		}
+
 		UpdateUnits();
 
 		if( captureProgress <= -200 ) {
@@ -215,46 +297,24 @@ public class Tile : MonoBehaviour {
 
 			GameObject canvas = GameObject.Find( "WorldCanvas" );
 
-			for( int dy = -1; dy < 2; dy++ ) {
-				
-				for( int dx = -1; dx < 2; dx++ ) {
+			gameObject.layer = 8;
+			for( int i = 0; i < 6; i++ ) {
 
-					int x = ( int )mPosition.x + dx;
-					int y = ( int )mPosition.y + dy;
+				if( mNeighbour[ i ] == null ) continue;
 
-					if( dx != 0 ) {
+				mNeighbour[ i ].layer = 8;
 
-						if( x % 2 == 1 ) {
+				int id = mNeighbour[ i ].GetComponent<Tile>().GetId();
+				int childCount = mNeighbour[ i ].transform.childCount;
+				string childName = "";
+				TileOwner owner = mNeighbour[ i ].GetComponent<Tile>().GetOwner();
 
-							if( dy == 1 ) continue;
+				if( childCount > 0 ) childName = mNeighbour[ i ].transform.GetChild( 0 ).name;
 
-						} else {
+				if( mNeighbour[ i ] != null && owner != TileOwner.Player ) {
 
-							if( dy == -1 ) continue;
-
-						}
-
-					}
-
-					if( x > -1 && x < mTileManager.GetMap().Size.x && y > -1 && y < mTileManager.GetMap().Size.y ) {
-
-						mTileManager.GetMap().GetMapData()[ x, y ].layer = 8;
-
-						int id = mTileManager.GetMap().GetMapData()[ x, y ].GetComponent< Tile >().GetId();
-						int childCount = mTileManager.GetMap().GetMapData()[ x, y ].transform.childCount;
-						string childName = "";
-						TileOwner owner = mTileManager.GetMap().GetMapData()[ x, y ].GetComponent< Tile >().GetOwner();
-
-						if( childCount > 0 ) childName = mTileManager.GetMap().GetMapData()[ x, y ].transform.GetChild( 0 ).name;
-
-						if( mTileManager.GetMap().GetMapData()[ x, y ].gameObject.activeSelf && owner != TileOwner.Player ) {
-							
-							if( childCount == 0 || childCount > 0 && childName != "Tree" )
-								canvas.transform.GetChild( id ).gameObject.SetActive( true );
-
-						}
-
-					}
+					if( childCount == 0 || childCount > 0 && childName != "Tree" )
+						canvas.transform.GetChild( id ).gameObject.SetActive( true );
 
 				}
 
