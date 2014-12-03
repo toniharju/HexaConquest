@@ -167,10 +167,15 @@ public class Tile : MonoBehaviour {
 
 				}
 
+				Material[] changed = new Material[ 4 ];
+				changed = units.renderer.materials;
+
 				if( mUnits[ 0 ].GetUnitOwner() == 1 )
-					units.renderer.materials[ 2 ] = Resources.Load<Material>( "Materials/ShieldFrontGreen" );
+					changed[ 1 ] = Resources.Load<Material>( "Materials/ShieldFrontGreen" );
 				else
-					units.renderer.materials[ 2 ] = Resources.Load<Material>( "Materials/ShieldFrontRed" );
+					changed[ 1 ] = Resources.Load<Material>( "Materials/ShieldFrontRed" );
+
+				units.renderer.materials = changed;
 
 			} else {
 
