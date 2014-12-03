@@ -207,7 +207,51 @@ public class TileManager : MonoBehaviour {
 							//Do attack here
 							if( Input.GetMouseButtonUp( 1 ) ) {
 
+								int enemyCount = mHoverTile.GetComponent<Tile>().GetUnits().Count;
+								int friendlyCount = mSelectedTile.GetComponent<Tile>().GetUnits().Count;
 
+								UnitType[] enemyType = new UnitType[ enemyCount ];
+								int[] enemyHealth = new int[ enemyCount ];
+
+								for( int i = 0; i < enemyCount; i++ ) {
+
+									enemyType[ i ] = mHoverTile.GetComponent<Tile>().GetUnits()[ i ].GetUnitType();
+									enemyHealth[ i ] = Mechanics.GetHealth( mHoverTile.GetComponent<Tile>().GetUnits()[ i ].GetUnitType() );
+
+								}
+
+								for( int i = 0; i < friendlyCount; i++ ) {
+
+									int toAttack = Random.Range( 0, enemyCount );
+									int attackPower = Mechanics.GetAttackPower( mSelectedTile.GetComponent<Tile>().GetUnits()[ i ].GetUnitType() );
+									
+									while( enemyHealth[ toAttack ] <= 0 ) toAttack = Random.Range( 0, enemyCount );
+
+									enemyHealth[ toAttack ] -= attackPower;
+
+								}
+
+								for( int i = enemyCount - 1; i >= 0; i-- ) {
+
+									if( enemyHealth[ i ] <= 0 ) {
+
+										if( enemyType[ i ] == UnitType.Footman )
+											mHoverTile.GetComponent<Tile>().RemoveFootman( true );
+										else if( enemyType[ i ] == UnitType.Archer )
+											mHoverTile.GetComponent<Tile>().RemoveArcher( true );
+										else if( enemyType[ i ] == UnitType.Lancer )
+											mHoverTile.GetComponent<Tile>().RemoveLancer( true );
+										
+										mHoverTile.GetComponent<Tile>().GetUnits().RemoveAt( i );
+
+									}
+
+								}
+
+								mSelectedTile.GetComponent<Tile>().Disable();
+
+								Destroy( arrowTempParent );
+								StateManager.Clear();
 
 							}
 
@@ -274,6 +318,11 @@ public class TileManager : MonoBehaviour {
 			int archerCount = mSelectedTile.GetComponent<Tile>().GetUnitCount()[ ( int )UnitType.Archer ];
 			int lancerCount = mSelectedTile.GetComponent<Tile>().GetUnitCount()[ ( int )UnitType.Lancer ];
 
+			int owner = 1;
+			bool isDisabled = mSelectedTile.GetComponent<Tile>().IsDisabled();
+
+			if( footmanCount > 0 || archerCount > 0 || lancerCount > 0 ) owner = mSelectedTile.GetComponent<Tile>().GetUnits()[ 0 ].GetUnitOwner();
+
 			if( StateManager.GetState() == State.Move && StateManager.GetParameters().Count > 0 ) {
 
 				footmanSelectCount = StateManager.GetParameters().FindAll( delegate( string move ) { return move == "move_footman"; } ).Count;
@@ -284,45 +333,65 @@ public class TileManager : MonoBehaviour {
 
             if( mCastlePanel.activeSelf ) {
 
-				if( footmanCount == 0 || footmanSelectCount == footmanCount )
+				if( isDisabled || owner == 2 || footmanCount == 0 || footmanSelectCount == footmanCount )
 					mDeployButton[ 0 ].GetComponent<Button>().interactable = false;
 				else
 					mDeployButton[ 0 ].GetComponent<Button>().interactable = true;
 
-				if( archerCount == 0 || archerSelectCount == archerCount )
+				if( isDisabled || owner == 2 || archerCount == 0 || archerSelectCount == archerCount )
 					mDeployButton[ 1 ].GetComponent<Button>().interactable = false;
 				else
 					mDeployButton[ 1 ].GetComponent<Button>().interactable = true;
 
-				if( lancerCount == 0 || lancerSelectCount == lancerCount )
+				if( isDisabled || owner == 2 || lancerCount == 0 || lancerSelectCount == lancerCount )
 					mDeployButton[ 2 ].GetComponent<Button>().interactable = false;
 				else
 					mDeployButton[ 2 ].GetComponent<Button>().interactable = true;
 
-				mDeployButton[ 0 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = footmanSelectCount + "/" + footmanCount;
-				mDeployButton[ 1 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = archerSelectCount + "/" + archerCount;
-				mDeployButton[ 2 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = lancerSelectCount + "/" + lancerCount;
+				if( owner == 1 && !isDisabled ) {
+
+					mDeployButton[ 0 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = footmanSelectCount + "/" + footmanCount;
+					mDeployButton[ 1 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = archerSelectCount + "/" + archerCount;
+					mDeployButton[ 2 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = lancerSelectCount + "/" + lancerCount;
+
+				} else {
+
+					mDeployButton[ 0 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = "0/0";
+					mDeployButton[ 1 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = "0/0";
+					mDeployButton[ 2 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = "0/0";
+
+				}
 
             } else if( mTilePanel.activeSelf ) {
 
-				if( footmanCount == 0 || footmanSelectCount == footmanCount )
+				if( isDisabled || owner == 2 || footmanCount == 0 || footmanSelectCount == footmanCount )
 					mMoveButton[ 0 ].GetComponent<Button>().interactable = false;
 				else
 					mMoveButton[ 0 ].GetComponent<Button>().interactable = true;
 
-				if( archerCount == 0 || archerSelectCount == archerCount )
+				if( isDisabled || owner == 2 || archerCount == 0 || archerSelectCount == archerCount )
 					mMoveButton[ 1 ].GetComponent<Button>().interactable = false;
 				else
 					mMoveButton[ 1 ].GetComponent<Button>().interactable = true;
 
-				if( lancerCount == 0 || lancerSelectCount == lancerCount )
+				if( isDisabled || owner == 2 || lancerCount == 0 || lancerSelectCount == lancerCount )
 					mMoveButton[ 2 ].GetComponent<Button>().interactable = false;
 				else
 					mMoveButton[ 2 ].GetComponent<Button>().interactable = true;
 
-				mMoveButton[ 0 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = footmanSelectCount + "/" + footmanCount;
-				mMoveButton[ 1 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = archerSelectCount + "/" + archerCount;
-				mMoveButton[ 2 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = lancerSelectCount + "/" + lancerCount;
+				if( owner == 1 && !isDisabled ) {
+
+					mMoveButton[ 0 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = footmanSelectCount + "/" + footmanCount;
+					mMoveButton[ 1 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = archerSelectCount + "/" + archerCount;
+					mMoveButton[ 2 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = lancerSelectCount + "/" + lancerCount;
+
+				} else {
+
+					mMoveButton[ 0 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = "0/0";
+					mMoveButton[ 1 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = "0/0";
+					mMoveButton[ 2 ].transform.FindChild( "UnitCount" ).GetComponent<Text>().text = "0/0";
+
+				}
 
             }
 

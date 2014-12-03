@@ -61,9 +61,9 @@ public class Mechanics {
 
 	public static int GetHealth( UnitType type ) { return unitHealth[ (int)type ]; }
 
-	public static int GetPower( UnitType type ) {
+	public static int GetAttackPower( UnitType type ) {
 		
-		return ( unitPower[ (int)type ] + Random.Range( 1, 3 ) ) - Random.Range( 1, 6 );
+		return ( unitPower[ (int)type ] + Random.Range( 1, 4 ) ) - Random.Range( 1, 7 );
 	
 	}
 

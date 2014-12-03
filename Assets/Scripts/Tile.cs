@@ -35,6 +35,8 @@ public class Tile : MonoBehaviour {
 	private TileManager mTileManager;
 	private TurnManager mTurnManager;
 
+	private bool mIsDisabled = false;
+
     public int GoldValue = 1;
     public TileOwner Owner;
 
@@ -53,6 +55,11 @@ public class Tile : MonoBehaviour {
 			isAILand = true;
 		else if( transform.FindChild( "Mine" ) != null )
 			isMine = true;
+
+		if( isLand )
+			captureProgress = -200;
+		else if( isAILand )
+			captureProgress = 200;
 
 	}
 
@@ -78,21 +85,7 @@ public class Tile : MonoBehaviour {
 
 	}
 
-	public void OnTurn() {
-
-		if( mTempUnits.Count > 0 ) {
-
-			foreach( Unit unit in mTempUnits ) {
-
-				mUnits.Add( unit );
-				mUnitCount[ (int)unit.GetUnitType() ]++;
-
-			}
-
-			mTempUnits.Clear();
-			mTempUnitCount = new int[ 3 ];
-
-		}
+	public void UpdateUnits( bool capture = true ) {
 
 		if( mUnits.Count > 0 ) {
 
@@ -133,15 +126,19 @@ public class Tile : MonoBehaviour {
 
 			}
 
-			foreach( Unit unit in mUnits ) {
+			if( capture ) {
 
-				if( mTurnManager.GetTurn() == Turn.Player && unit.GetUnitOwner() == 1 ) {
+				foreach( Unit unit in mUnits ) {
 
-					captureProgress -= Mechanics.GetCaptureRate( unit.GetUnitType() );
+					if( mTurnManager.GetTurn() == Turn.Player && unit.GetUnitOwner() == 1 ) {
 
-				} else if( mTurnManager.GetTurn() == Turn.AI && unit.GetUnitOwner() == 2 ) {
-					
-					captureProgress += Mechanics.GetCaptureRate( unit.GetUnitType() );
+						captureProgress -= Mechanics.GetCaptureRate( unit.GetUnitType() );
+
+					} else if( mTurnManager.GetTurn() == Turn.AI && unit.GetUnitOwner() == 2 ) {
+
+						captureProgress += Mechanics.GetCaptureRate( unit.GetUnitType() );
+
+					}
 
 				}
 
@@ -152,6 +149,44 @@ public class Tile : MonoBehaviour {
 			if( transform.FindChild( "Units" ) != null ) Destroy( transform.FindChild( "Units" ).gameObject );
 
 		}
+
+	}
+
+	public void OnTurn() {
+
+		mIsDisabled = false;
+
+		if( mTempUnits.Count > 0 ) {
+
+			bool clear = false;
+			
+			foreach( Unit unit in mTempUnits ) {
+				
+				if( ( mTurnManager.GetTurn() == Turn.Player && unit.GetUnitOwner() == 1 ) || ( mTurnManager.GetTurn() == Turn.AI && unit.GetUnitOwner() == 2 ) ) {
+					
+					clear = true;
+
+					mUnits.Add( unit );
+					mUnitCount[ ( int )unit.GetUnitType() ]++;
+
+				} else {
+
+					break;
+
+				}
+
+			}
+
+			if( clear ) {
+
+				mTempUnits.Clear();
+				mTempUnitCount = new int[ 3 ];
+
+			}
+
+		}
+		
+		UpdateUnits();
 
 		if( captureProgress <= -200 ) {
 
@@ -213,7 +248,7 @@ public class Tile : MonoBehaviour {
 						if( childCount > 0 ) childName = mTileManager.GetMap().GetMapData()[ x, y ].transform.GetChild( 0 ).name;
 
 						if( mTileManager.GetMap().GetMapData()[ x, y ].gameObject.activeSelf && owner != TileOwner.Player ) {
-
+							
 							if( childCount == 0 || childCount > 0 && childName != "Tree" )
 								canvas.transform.GetChild( id ).gameObject.SetActive( true );
 
@@ -266,7 +301,7 @@ public class Tile : MonoBehaviour {
 
 	}
 
-	public void AddFootman( int owner ) {
+	public void AddFootman( int owner, int task = 0 ) {
 
         if( isLand ) {
 
@@ -277,13 +312,13 @@ public class Tile : MonoBehaviour {
             if( mUnits.Count == 16 ) return;
 
         }
-
-		mTempUnits.Add( new Unit( UnitType.Footman, owner ) );
+		
+		mTempUnits.Add( new Unit( UnitType.Footman, owner, task ) );
 		mTempUnitCount[ ( int )UnitType.Footman ]++;
 
 	}
 
-	public void AddArcher( int owner ) {
+	public void AddArcher( int owner, int task = 0 ) {
 
         if( isLand ) {
 
@@ -295,12 +330,12 @@ public class Tile : MonoBehaviour {
 
         }
 
-		mTempUnits.Add( new Unit( UnitType.Archer, owner ) );
+		mTempUnits.Add( new Unit( UnitType.Archer, owner, task ) );
 		mTempUnitCount[ ( int )UnitType.Archer ]++;
 
 	}
 
-	public void AddLancer( int owner ) {
+	public void AddLancer( int owner, int task = 0 ) {
 
         if( isLand ) {
 
@@ -312,7 +347,7 @@ public class Tile : MonoBehaviour {
 
         }
 
-		mTempUnits.Add( new Unit( UnitType.Lancer, owner ) );
+		mTempUnits.Add( new Unit( UnitType.Lancer, owner, task ) );
 		mTempUnitCount[ ( int )UnitType.Lancer ]++;
 
 	}
@@ -338,31 +373,71 @@ public class Tile : MonoBehaviour {
 
 	}
 
-    public void RemoveFootman() {
+    public void RemoveFootman( bool countOnly = false ) {
 
-        foreach( Unit unit in mUnits ) {
+		if( countOnly ) {
 
-            if( unit.GetUnitType() == UnitType.Footman ) {
+			mUnitCount[ ( int )UnitType.Footman ]--;
 
-                mUnits.Remove( unit );
-                mUnitCount[ ( int )UnitType.Footman ]--;
-                break;
+		} else {
 
-            }
+			foreach( Unit unit in mUnits ) {
 
-        }
+				if( unit.GetUnitType() == UnitType.Footman ) {
+
+					mUnits.Remove( unit );
+					mUnitCount[ ( int )UnitType.Footman ]--;
+					break;
+
+				}
+
+			}
+
+		}
 
     }
 
-	public void RemoveArcher() {
+	public void RemoveArcher( bool countOnly = false ) {
 
-		foreach( Unit unit in mUnits ) {
+		if( countOnly ) {
 
-			if( unit.GetUnitType() == UnitType.Archer ) {
+			mUnitCount[ ( int )UnitType.Archer ]--;
 
-				mUnits.Remove( unit );
-				mUnitCount[ ( int )UnitType.Archer ]--;
-				break;
+		} else {
+
+			foreach( Unit unit in mUnits ) {
+
+				if( unit.GetUnitType() == UnitType.Archer ) {
+
+					mUnits.Remove( unit );
+					mUnitCount[ ( int )UnitType.Archer ]--;
+					break;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	public void RemoveLancer( bool countOnly = false ) {
+
+		if( countOnly ) {
+
+			mUnitCount[ ( int )UnitType.Lancer ]--;
+
+		} else {
+
+			foreach( Unit unit in mUnits ) {
+
+				if( unit.GetUnitType() == UnitType.Lancer ) {
+
+					mUnits.Remove( unit );
+					mUnitCount[ ( int )UnitType.Lancer ]--;
+					break;
+
+				}
 
 			}
 
@@ -370,27 +445,17 @@ public class Tile : MonoBehaviour {
 
 	}
 
-	public void RemoveLancer() {
-
-		foreach( Unit unit in mUnits ) {
-
-			if( unit.GetUnitType() == UnitType.Lancer ) {
-
-				mUnits.Remove( unit );
-				mUnitCount[ ( int )UnitType.Lancer ]--;
-				break;
-
-			}
-
-		}
-
-	}
+	public void AddToCapture( int points ) { captureProgress += points; }
 
 	public bool IsLand() { return isLand; }
 	public bool IsAILand() { return isAILand; }
+	public bool IsMine() { return isMine; }
 
 	public List<Unit> GetUnits() { return mUnits; }
 	public List<Unit> GetTempUnits() { return mTempUnits; }
 	public int[] GetUnitCount() { return mUnitCount; }
+
+	public bool IsDisabled() { return mIsDisabled; }
+	public void Disable() { mIsDisabled = true; }
 
 }
